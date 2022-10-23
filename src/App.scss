@@ -1,0 +1,30 @@
+@import './css/parameters.scss';
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: $main-background-color;
+    background-color: rgb(241, 235, 235);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 10px;
+  }
+}
