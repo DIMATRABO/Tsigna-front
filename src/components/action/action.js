@@ -3,7 +3,7 @@ import "./action.scss";
 
 const Action = ({ id, updateXarrow }) => {
   return (
-    <Draggable onDrag={updateXarrow} onStop={updateXarrow}>
+    <Draggable onDrag={updateXarrow} onStop={updateXarrow} bounds='parent'>
       <div id={id} className="draggable-action">
         {id}
       </div>
