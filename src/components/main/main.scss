@@ -1,17 +1,7 @@
 .main{
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 50px);
     overflow-y: auto;
     position: relative;
     display: flex;
-    .container{
-        width: 60%;
-        height: 100%;
-        position: relative;
-        background-color: rgba(255, 0, 0, 0.116);
-    }
-    .items{
-        width: 40%;
-        height: 100%;
-    }
 }

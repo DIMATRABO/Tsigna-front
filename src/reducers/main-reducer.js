@@ -1,113 +1,101 @@
 import {
-  HIDE_POP_UP,
-  SET_AUTHENTICATED,
-  SET_LABELS,
-  SET_PREFERENCES,
-  SET_SEARCH_VALUE,
-  SET_USER_INFO,
-  SHOW_LOADING,
-  SHOW_NO_NETWOEK,
-  SHOW_POP_UP,
-  UPDATE_CONTEXT,
-  UPDATE_PLANNINGS_MONTH,
-  UPDATE_PLANNINGS_YEAR
-} from '../actions/mainActions';
-import store from 'store';
+  ADD_CARD,
+  FOCUS_CARD,
+  REMOVE_CARD,
+  ADD_ARROW,
+  REMOVE_ARROW,
+  REMOVE_FOCUS_CARD,
+  SET_DRAG_OVER_ITEM,
+} from "../actions/mainActions";
 
 const initialState = {
-  // FIXME: Deprecated; no need for this context after introducing ReactRouterV6
-  context: store.get('context') ? store.get('context') : 'AgentsTrackPositions',
-  showPopUp: false,
-  loading: false,
-  noNetwork: false,
-  popUpMessage: '',
-  preferences: [],
-  labels: [],
-  month: `${new Date().toLocaleString('en', { month: 'long' })}`,
-  year: new Date().getFullYear(),
-  authenticated: false,
-  searchValue: undefined
+  cards: [],
+  arrows: [],
+  ACTIONS: [
+    "Action1",
+    "Action2",
+    "Action3",
+    "Action4",
+    "Action5",
+    "Action6",
+    "Action7",
+  ],
+  OPERATIONS: [
+    "Operation1",
+    "Operation2",
+    "Operation3",
+    "Operation4",
+    "Operation5",
+    "Operation6",
+    "Operation7",
+  ],
+  INDICATORS: [
+    "Indicator1",
+    "Indicator2",
+    "Indicator3",
+    "Indicator4",
+    "Indicator5",
+    "Indicator6",
+    "Indicator7",
+  ],
+  dragOverItem: null,
 };
 
 export const MainReducer = (
   state = initialState,
-  {
-    type,
-    newContext,
-    message,
-    userInfo,
-    month,
-    year,
-    value,
-    authenticated,
-    searchValue,
-    preferences,
-    labels
-  }
+  { type, card, arrow, id }
 ) => {
   switch (type) {
-    case SET_PREFERENCES:
+    case ADD_CARD:
+      card.id += Date.now();
       return {
         ...state,
-        preferences: preferences
+        cards: [...state.cards, card],
       };
-    case SET_LABELS:
+    case FOCUS_CARD:
+      const cardsCopy = [...state.cards].map((card) => {
+        if (card.id === id) {
+          card.focus = true;
+        } else {
+          card.focus = false;
+        }
+        return card;
+      });
       return {
         ...state,
-        labels: labels
+        cards: cardsCopy,
       };
-    case UPDATE_CONTEXT:
-      store.set('context', newContext, { path: '/' });
+    case REMOVE_FOCUS_CARD:
       return {
         ...state,
-        context: newContext,
-        noNetwork: false
+        cards: [...state.cards].map((card) => {
+          card.focus = false;
+          return card;
+        }),
       };
-    case SHOW_POP_UP:
+    case SET_DRAG_OVER_ITEM:
       return {
         ...state,
-        showPopUp: true,
-        popUpMessage: message
+        dragOverItem: id,
       };
-    case HIDE_POP_UP:
+    case REMOVE_CARD:
       return {
         ...state,
-        showPopUp: false
+        cards: state.cards.filter((card) => card.id !== id),
       };
-    case SHOW_LOADING:
+    case ADD_ARROW:
+      arrow.id += Date.now();
       return {
         ...state,
-        loading: value
+        arrows: [...state.arrows, arrow],
       };
-    case SHOW_NO_NETWOEK:
+    case REMOVE_ARROW:
       return {
         ...state,
-        noNetwork: value
-      };
-    case SET_AUTHENTICATED:
-      return {
-        ...state,
-        authenticated: authenticated
-      };
-    case SET_USER_INFO:
-      return {
-        ...state,
-        userInfo: userInfo
-      };
-    case UPDATE_PLANNINGS_MONTH:
-      return {
-        ...state,
-        month: month
-      };
-    case UPDATE_PLANNINGS_YEAR:
-      return {
-        ...state,
-        year: year
-      };
-    case SET_SEARCH_VALUE:
-      return {
-        ...state,
-        searchValue: searchValue?.toLowerCase()
+        arrows: [...state.arrows].map((arrow) => {
+          arrow.focus = false;
+          return card;
+        }),
       };
     default:
       return state;

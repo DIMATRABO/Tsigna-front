@@ -1,0 +1,111 @@
+@import './../../../css/parameters.scss';
+
+.profile-manag-container {
+  height: 600px;
+  width: 500px;
+  background-color: white;
+  border-radius: 15px;
+
+  .profile-manag-header {
+    height: 40px;
+    padding: 0px 20px;
+    border-radius: 15px 15px 0px 0px;
+    background-color: black;
+    color: white;
+    font-size: 13px;
+    font-family: 'Montserrat-SemiBold';
+    display: flex;
+    align-items: center;
+  }
+
+  .profile-manag-main {
+    height: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .modal-title {
+      height: 20px;
+      width: 90%;
+      color: #9b9393;
+      font-family: 'Montserrat-Medium';
+      margin-left: 20px;
+      margin-top: 8px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+    }
+
+    .field {
+      margin: 10px 0px;
+      width: 90%;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      .box {
+        background-color: transparent;
+        cursor: pointer;
+        height: 100%;
+        border: 1px solid #9b9393;
+        border-radius: 6px;
+        font-family: 'Montserrat-Medium';
+        font-size: 11px;
+      }
+
+      .box:hover {
+        background-color: rgb(247, 247, 247);
+      }
+    }
+
+    .profile-role-field {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      .role {
+        width: 120px;
+        height: 30px;
+        border-radius: 5px;
+        font-family: 'Montserrat-Medium';
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        border: solid 1px rgba(71, 166, 243, 0.3);
+      }
+
+      .role:hover {
+        background-color: rgba(71, 166, 243, 0.562);
+        color: white;
+      }
+
+      .selected,
+      .selected:hover {
+        background-color: rgb(71, 166, 243);
+        color: white;
+      }
+    }
+
+    .map-field {
+      width: 90%;
+      height: 300px;
+      margin: 10px 20px;
+    }
+  }
+
+  .profile-manag-footer {
+    height: 60px;
+    padding: 0px 20px;
+    border-radius: 15px 15px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

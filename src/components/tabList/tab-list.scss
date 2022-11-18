@@ -1,0 +1,15 @@
+
+.tab-list {
+  position: absolute;
+  top: 52px;
+  left: 10px;
+  width: 180px;
+  height: 400px;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.476);
+  z-index: 3;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.775);
+}
