@@ -68,10 +68,17 @@ const Card = ({ card, updateXarrow }) => {
               }}
             />
           )}
-          <div className="card-title">{card.name}</div>
-          {card.focus && (
-            <div id={card?.id + "hhh"} className="card-content"></div>
-          )}
+          <div className="card-title">{card.details?.title}</div>
+          {card.details?.form?.map((item, index) => (
+            <div className="card-form-element" key={index}>
+              <div className="card-item-label">{item.label}</div>
+              <div className="card-item-value">{item.value}</div>
+            </div>
+          ))}
+          <div
+            id={card?.id + "hhh"}
+            className={card.focus ? "card-content" : "card-content hidden"}
+          ></div>
         </div>
       )}
     </Draggable>

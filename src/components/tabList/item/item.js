@@ -21,8 +21,8 @@ const Item = ({ details }) => {
       dispatch(setDragOverItem(null));
       dispatch(
         addCard({
-          id: e.target.innerHTML,
-          name: e.target.innerHTML,
+          id: details.item?.title,
+          details: details.item,
           top: e.pageY - 60,
           left: e.pageX,
         })
@@ -39,7 +39,7 @@ const Item = ({ details }) => {
       onDragEnter={() => dispatch(setDragOverItem(null))}
       draggable
     >
-      {details.label}
+      {details.item?.title}
     </div>
   );
 };

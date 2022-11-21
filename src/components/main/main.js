@@ -31,14 +31,14 @@ const Main = () => {
         {reducer.cards?.map((card) => {
           return <Card key={card.id} card={card} updateXarrow={updateXarrow} />;
         })}
-        {reducer.cards.length > 1 && (
+        {/* {reducer.cards.length > 1 && (
           <Xarrow
             start={reducer.cards[1].id}
             end={reducer.cards[0].id + "hhh"}
-            showHead={false}
+            showHead={true}
             zIndex={3}
           />
-        )}
+        )} */}
         {/* <Xarrow start={"input1"} end="action1" showHead={true} /> */}
       </Xwrapper>
     </div>

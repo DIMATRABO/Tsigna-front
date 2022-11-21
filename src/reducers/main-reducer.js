@@ -12,31 +12,62 @@ const initialState = {
   cards: [],
   arrows: [],
   ACTIONS: [
-    "Action1",
-    "Action2",
-    "Action3",
-    "Action4",
-    "Action5",
-    "Action6",
-    "Action7",
+    {
+      title: "Action1",
+    },
+    {
+      title: "Action2",
+    },
+    {
+      title: "Action3",
+    },
+    {
+      title: "Action4",
+    },
   ],
   OPERATIONS: [
-    "Operation1",
-    "Operation2",
-    "Operation3",
-    "Operation4",
-    "Operation5",
-    "Operation6",
-    "Operation7",
+    {
+      title: "a < b",
+      operation: "<",
+      form: [
+        {
+          label: "a",
+          type: "number",
+        },
+        {
+          label: "b",
+          type: "number",
+        },
+      ],
+    },
+    {
+      title: "a > b",
+      operation: ">",
+      form: [
+        {
+          label: "a",
+          type: "number",
+        },
+        {
+          label: "b",
+          type: "number",
+        },
+      ],
+    },
   ],
   INDICATORS: [
-    "Indicator1",
-    "Indicator2",
-    "Indicator3",
-    "Indicator4",
-    "Indicator5",
-    "Indicator6",
-    "Indicator7",
+    {
+      title: "Indicator1",
+    },
+    {
+      title: "Indicator2",
+    },
+    {
+      title: "Indicator3",
+    },
+    {
+      title: "Indicator4",
+    },
   ],
   dragOverItem: null,
 };
