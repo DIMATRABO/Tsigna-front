@@ -25,6 +25,7 @@ const Item = ({ details }) => {
           details: details.item,
           top: e.pageY - 60,
           left: e.pageX,
+          focus: true,
         })
       );
     }

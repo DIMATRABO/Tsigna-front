@@ -3,6 +3,7 @@ import Card from "../card/card";
 import "./main.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setDragOverItem } from "../../actions/mainActions";
+import { useEffect } from "react";
 
 const Main = () => {
   const updateXarrow = useXarrow();
@@ -20,6 +21,13 @@ const Main = () => {
     e.target.style.backgroundColor = null;
   };
 
+  useEffect(() => {
+    console.log("reducer", reducer);
+    console.log(reducer.arrows?.length > 0);
+    reducer.arrows.map((arrow) => {
+      console.log("arrow", arrow);
+    });
+  }, [reducer]);
   return (
     <div
       className="main"
@@ -31,14 +39,17 @@ const Main = () => {
         {reducer.cards?.map((card) => {
           return <Card key={card.id} card={card} updateXarrow={updateXarrow} />;
         })}
-        {/* {reducer.cards.length > 1 && (
-          <Xarrow
-            start={reducer.cards[1].id}
-            end={reducer.cards[0].id + "hhh"}
-            showHead={true}
-            zIndex={3}
-          />
-        )} */}
+        {reducer.arrows?.length > 0 &&
+          reducer.arrows.map((arrow) => {
+            return (
+              <Xarrow
+                start={arrow.start}
+                end={arrow.end}
+                showHead={true}
+                zIndex={3}
+              />
+            );
+          })}
         {/* <Xarrow start={"input1"} end="action1" showHead={true} /> */}
       </Xwrapper>
     </div>

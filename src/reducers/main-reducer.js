@@ -2,13 +2,15 @@ import {
   ADD_CARD,
   FOCUS_CARD,
   REMOVE_CARD,
-  ADD_ARROW,
   REMOVE_ARROW,
   REMOVE_FOCUS_CARD,
   SET_DRAG_OVER_ITEM,
+  SET_FROM_CARD,
+  BUILD_ARROW,
 } from "../actions/mainActions";
 
 const initialState = {
+  headFromCard: null,
   cards: [],
   arrows: [],
   ACTIONS: [
@@ -32,11 +34,15 @@ const initialState = {
       form: [
         {
           label: "a",
-          type: "number",
+          type: "STRING",
+          options: [],
+          fromCard: false,
         },
         {
           label: "b",
-          type: "number",
+          type: "STRING",
+          options: [],
+          fromCard: false,
         },
       ],
     },
@@ -46,11 +52,21 @@ const initialState = {
       form: [
         {
           label: "a",
-          type: "number",
+          type: "STRING",
+          options: [],
+          fromCard: false,
         },
         {
           label: "b",
-          type: "number",
+          type: "BOOLEAN",
+          options: [],
+          fromCard: false,
+        },
+        {
+          label: "c",
+          type: "SELECT",
+          options: ["opt1", "op2", "opt3"],
+          fromCard: false,
         },
       ],
     },
@@ -74,7 +90,7 @@ const initialState = {
 
 export const MainReducer = (
   state = initialState,
-  { type, card, arrow, id }
+  { type, card, id, details, startId }
 ) => {
   switch (type) {
     case ADD_CARD:
@@ -114,12 +130,6 @@ export const MainReducer = (
         ...state,
         cards: state.cards.filter((card) => card.id !== id),
       };
-    case ADD_ARROW:
-      arrow.id += Date.now();
-      return {
-        ...state,
-        arrows: [...state.arrows, arrow],
-      };
     case REMOVE_ARROW:
       return {
         ...state,
@@ -127,6 +137,57 @@ export const MainReducer = (
           arrow.focus = false;
           return card;
         }),
+      };
+    case SET_FROM_CARD:
+      let arrows = [...state.arrows];
+      let cards = [...state.cards];
+      let arrowEnds = null;
+      if (!details.value) {
+        arrows = arrows.filter(
+          (arrow) => arrow.end !== details.cardId + "-" + details.label
+        );
+        cards = cards.map((card) => {
+          if (card.id === details.cardId && card.details?.form?.length > 0) {
+            card.details.form.map((item) => {
+              if (item.label === details.label) {
+                item.fromCard = false;
+              }
+              return item;
+            });
+          }
+          return card;
+        });
+      } else {
+        arrowEnds = details.cardId + "-" + details.label;
+        cards = cards.map((card) => {
+          if (card.id === details.cardId && card.details?.form?.length > 0) {
+            card.details.form.map((item) => {
+              if (item.label === details.label) {
+                item.fromCard = true;
+              }
+              return item;
+            });
+          }
+          return card;
+        });
+      }
+      return {
+        ...state,
+        arrows,
+        cards,
+        headFromCard: arrowEnds,
+      };
+    case BUILD_ARROW:
+      const arrowId = Date.now();
+      const arrowStart = startId;
+      const arrowEnd = state.headFromCard;
+      return {
+        ...state,
+        arrows: [
+          ...state.arrows,
+          { id: arrowId, start: arrowStart, end: arrowEnd },
+        ],
+        headFromCard: null,
       };
     default:
       return state;
