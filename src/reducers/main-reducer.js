@@ -13,24 +13,23 @@ const initialState = {
   headFromCard: null,
   cards: [],
   arrows: [],
-  ACTIONS: [
+  templates: [
     {
-      title: "Action1",
+      title: "Price 1",
+      type: "INDICATOR",
     },
     {
-      title: "Action2",
+      title: "Price 2",
+      type: "INDICATOR",
     },
     {
-      title: "Action3",
+      title: "Price 3",
+      type: "INDICATOR",
     },
-    {
-      title: "Action4",
-    },
-  ],
-  OPERATIONS: [
     {
       title: "a < b",
       operation: "<",
+      type: "OPERATION",
       form: [
         {
           label: "a",
@@ -49,6 +48,7 @@ const initialState = {
     {
       title: "a > b",
       operation: ">",
+      type: "OPERATION",
       form: [
         {
           label: "a",
@@ -70,19 +70,17 @@ const initialState = {
         },
       ],
     },
-  ],
-  INDICATORS: [
     {
-      title: "Indicator1",
+      title: "Action 1",
+      type: "ACTION",
     },
     {
-      title: "Indicator2",
+      title: "Action 2",
+      type: "ACTION",
     },
     {
-      title: "Indicator3",
-    },
-    {
-      title: "Indicator4",
+      title: "Action 3",
+      type: "ACTION",
     },
   ],
   dragOverItem: null,
@@ -144,7 +142,9 @@ export const MainReducer = (
       let arrowEnds = null;
       if (!details.value) {
         arrows = arrows.filter(
-          (arrow) => arrow.end !== details.cardId + "-" + details.label
+          (arrow) =>
+            arrow.end !==
+            details.cardId + (details.label ? "-" + details.label : "")
         );
         cards = cards.map((card) => {
           if (card.id === details.cardId && card.details?.form?.length > 0) {
@@ -158,7 +158,7 @@ export const MainReducer = (
           return card;
         });
       } else {
-        arrowEnds = details.cardId + "-" + details.label;
+        arrowEnds = details.cardId + (details.label ? "-" + details.label : "");
         cards = cards.map((card) => {
           if (card.id === details.cardId && card.details?.form?.length > 0) {
             card.details.form.map((item) => {

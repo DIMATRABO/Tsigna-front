@@ -28,9 +28,9 @@ const Navbar = () => {
         onDragEnter={() => dispatch(setDragOverItem(null))}
       >
         <div
-          className={`tab ${activeTab === "ACTIONS" ? "active" : ""}`}
+          className={`tab ${activeTab === "ACTION" ? "active" : ""}`}
           onClick={(e) => {
-            setActiveTab("ACTIONS");
+            setActiveTab("ACTION");
             setLeft(5);
             e.preventDefault();
             e.stopPropagation();
@@ -39,9 +39,9 @@ const Navbar = () => {
           Ations
         </div>
         <div
-          className={`tab ${activeTab === "OPERATIONS" ? "active" : ""}`}
+          className={`tab ${activeTab === "OPERATION" ? "active" : ""}`}
           onClick={(e) => {
-            setActiveTab("OPERATIONS");
+            setActiveTab("OPERATION");
             setLeft(105);
             e.preventDefault();
             e.stopPropagation();
@@ -50,9 +50,9 @@ const Navbar = () => {
           Operations
         </div>
         <div
-          className={`tab ${activeTab === "INDICATORS" ? "active" : ""}`}
+          className={`tab ${activeTab === "INDICATOR" ? "active" : ""}`}
           onClick={(e) => {
-            setActiveTab("INDICATORS");
+            setActiveTab("INDICATOR");
             setLeft(205);
             e.preventDefault();
             e.stopPropagation();

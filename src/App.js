@@ -7,11 +7,14 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const popUp = useSelector(selectPopUpReducer);
+  const reducer = useSelector((reducer) => reducer.MainReducer);
+
   return (
     <div className="App">
       <Navbar />
       <Main />
       {popUp.show && <PopUp content={popUp.content} />}
+      {reducer.headFromCard && <div className="blur-layer" />}
     </div>
   );
 };

@@ -46,11 +46,10 @@ const Main = () => {
                 start={arrow.start}
                 end={arrow.end}
                 showHead={true}
-                zIndex={3}
+                zIndex={5}
               />
             );
           })}
-        {/* <Xarrow start={"input1"} end="action1" showHead={true} /> */}
       </Xwrapper>
     </div>
   );

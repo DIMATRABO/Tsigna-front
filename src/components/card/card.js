@@ -2,13 +2,7 @@ import Draggable from "react-draggable"; // The default
 import "./card.scss";
 import { IoIosCloseCircleOutline, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  buildArrow,
-  focusCard,
-  removeCard,
-  removeFocusCard,
-  setFromCard,
-} from "../../actions/mainActions";
+import { buildArrow, removeCard, setFromCard } from "../../actions/mainActions";
 import { useEffect } from "react";
 
 const Card = ({ card, updateXarrow }) => {
@@ -16,6 +10,7 @@ const Card = ({ card, updateXarrow }) => {
   const reducer = useSelector((reducer) => reducer.MainReducer);
 
   useEffect(() => {
+    console.log(card);
     const cardElemet = document.getElementById(card.id);
 
     let resizeObserver = new ResizeObserver(() => {
@@ -23,11 +18,27 @@ const Card = ({ card, updateXarrow }) => {
     });
 
     resizeObserver.observe(cardElemet);
-  }, [card.id, updateXarrow]);
+  }, [card.id]);
 
   const fromCard = (cardId, label, value) => {
     dispatch(setFromCard({ cardId, label, value }));
   };
+
+  const cardClass = (card) => {
+    let className = "draggable-input";
+    if (card.focus) {
+      className += " focus";
+    }
+    if (reducer.headFromCard) {
+      if (!reducer.headFromCard.includes(card.id)) {
+        className += " wink up";
+      } else {
+        className += " up";
+      }
+    }
+    return className;
+  };
+
   return (
     <Draggable
       onDrag={() => {
@@ -40,18 +51,12 @@ const Card = ({ card, updateXarrow }) => {
         <div
           id={card?.id}
           onRes={updateXarrow}
-          className={`draggable-input ${card.focus ? "focus" : ""} ${
-            reducer.headFromCard && !reducer.headFromCard?.includes(card.id)
-              ? "shake"
-              : ""
-          }`}
+          className={cardClass(card)}
           onClick={() => {
             if (
               reducer.headFromCard &&
               !reducer.headFromCard.includes(card.id)
             ) {
-              console.log("card.id");
-              console.log(card.id);
               dispatch(buildArrow(card.id));
             }
           }}
@@ -61,15 +66,17 @@ const Card = ({ card, updateXarrow }) => {
             left: card?.left + "px",
           }}
         >
-          <IoIosCloseCircleOutline
-            className="close"
-            color="red"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              dispatch(removeCard(card.id));
-            }}
-          />
+          {!reducer.headFromCard && (
+            <IoIosCloseCircleOutline
+              className="close"
+              color="red"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dispatch(removeCard(card.id));
+              }}
+            />
+          )}
           {/* {!card.focus && (
             <IoIosEye
               className="eye"
@@ -89,6 +96,17 @@ const Card = ({ card, updateXarrow }) => {
             />
           )} */}
           <div className="card-title">{card.details?.title}</div>
+          {card.details?.type === "ACTION" && (
+            <span>
+              <label>
+                <input
+                  type="checkbox"
+                  onChange={(e) => fromCard(card.id, null, e.target.checked)}
+                />
+                From card
+              </label>
+            </span>
+          )}
           {card.details?.form &&
             card.details.form.map((item, index) => (
               <div className="card-form-element" key={index}>
@@ -96,8 +114,6 @@ const Card = ({ card, updateXarrow }) => {
                 <label>
                   <input
                     type="checkbox"
-                    name="FromInput"
-                    // defaultValue={item.fromCard}
                     onChange={(e) =>
                       fromCard(card.id, item.label, e.target.checked)
                     }

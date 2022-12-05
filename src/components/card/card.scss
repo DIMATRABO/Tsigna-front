@@ -76,22 +76,18 @@
   z-index: 2;
   display: block;
 }
-.shake {
-  animation: shake 0.5s;
+.wink {
+  animation: wink 0.5s;
   animation-iteration-count: infinite;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.476);
+}
+.up{
+  z-index: 5;
 }
 
 
-@keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
+@keyframes wink {
+  0% { background-color: white; }
+  50% { background-color: rgb(255, 215, 215); }
+  100% { background-color: white; }
 }

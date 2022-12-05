@@ -1,5 +1,5 @@
 import { addCard, setDragOverItem } from "actions/mainActions";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./item.scss";
 

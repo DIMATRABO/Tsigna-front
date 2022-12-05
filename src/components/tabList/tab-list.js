@@ -34,8 +34,9 @@ const TabList = ({ type, close, left }) => {
       }}
       onDragEnter={() => dispatch(setDragOverItem(null))}
     >
-      {reducer[type] &&
-        reducer[type].map((item, index) => (
+      {reducer.templates
+        ?.filter((template) => template.type === type)
+        .map((item, index) => (
           <Item details={{ item, index }} key={index} />
         ))}
     </div>
