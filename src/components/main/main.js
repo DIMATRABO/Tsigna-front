@@ -3,7 +3,6 @@ import Card from "../card/card";
 import "./main.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setDragOverItem } from "../../actions/mainActions";
-import { useEffect } from "react";
 
 const Main = () => {
   const updateXarrow = useXarrow();
@@ -21,13 +20,6 @@ const Main = () => {
     e.target.style.backgroundColor = null;
   };
 
-  useEffect(() => {
-    console.log("reducer", reducer);
-    console.log(reducer.arrows?.length > 0);
-    reducer.arrows.map((arrow) => {
-      console.log("arrow", arrow);
-    });
-  }, [reducer]);
   return (
     <div
       className="main"

@@ -10,7 +10,6 @@ const Card = ({ card, updateXarrow }) => {
   const reducer = useSelector((reducer) => reducer.MainReducer);
 
   useEffect(() => {
-    console.log(card);
     const cardElemet = document.getElementById(card.id);
 
     let resizeObserver = new ResizeObserver(() => {
@@ -20,8 +19,8 @@ const Card = ({ card, updateXarrow }) => {
     resizeObserver.observe(cardElemet);
   }, [card.id]);
 
-  const fromCard = (cardId, label, value) => {
-    dispatch(setFromCard({ cardId, label, value }));
+  const fromCard = (cardId, key, value) => {
+    dispatch(setFromCard({ cardId, key, value }));
   };
 
   const cardClass = (card) => {
@@ -96,35 +95,24 @@ const Card = ({ card, updateXarrow }) => {
             />
           )} */}
           <div className="card-title">{card.details?.title}</div>
-          {card.details?.type === "ACTION" && (
-            <span>
-              <label>
-                <input
-                  type="checkbox"
-                  onChange={(e) => fromCard(card.id, null, e.target.checked)}
-                />
-                From card
-              </label>
-            </span>
-          )}
           {card.details?.form &&
             card.details.form.map((item, index) => (
               <div className="card-form-element" key={index}>
-                <div className="card-item-label">{item.label}:</div>
+                <div className="card-item-label">{item.key}:</div>
                 <label>
                   <input
                     type="checkbox"
                     onChange={(e) =>
-                      fromCard(card.id, item.label, e.target.checked)
+                      fromCard(card.id, item.key, e.target.checked)
                     }
                   />
                   From card
                 </label>
                 <div
                   className="card-item-value"
-                  id={card?.id + "-" + item.label}
+                  id={card?.id + "-" + item.key}
                 >
-                  {item.type === "STRING" && (
+                  {(item.type === "STRING" || item.type === "INTEGER" || item.type === "FLOAT") && (
                     <input className="input" type="text"></input>
                   )}
                   {item.type === "BOOLEAN" && (

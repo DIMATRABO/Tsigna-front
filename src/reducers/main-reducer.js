@@ -1,4 +1,5 @@
 import {
+  SET_TEMPLATES,
   ADD_CARD,
   FOCUS_CARD,
   REMOVE_CARD,
@@ -13,84 +14,20 @@ const initialState = {
   headFromCard: null,
   cards: [],
   arrows: [],
-  templates: [
-    {
-      title: "Price 1",
-      type: "INDICATOR",
-    },
-    {
-      title: "Price 2",
-      type: "INDICATOR",
-    },
-    {
-      title: "Price 3",
-      type: "INDICATOR",
-    },
-    {
-      title: "a < b",
-      operation: "<",
-      type: "OPERATION",
-      form: [
-        {
-          label: "a",
-          type: "STRING",
-          options: [],
-          fromCard: false,
-        },
-        {
-          label: "b",
-          type: "STRING",
-          options: [],
-          fromCard: false,
-        },
-      ],
-    },
-    {
-      title: "a > b",
-      operation: ">",
-      type: "OPERATION",
-      form: [
-        {
-          label: "a",
-          type: "STRING",
-          options: [],
-          fromCard: false,
-        },
-        {
-          label: "b",
-          type: "BOOLEAN",
-          options: [],
-          fromCard: false,
-        },
-        {
-          label: "c",
-          type: "SELECT",
-          options: ["opt1", "op2", "opt3"],
-          fromCard: false,
-        },
-      ],
-    },
-    {
-      title: "Action 1",
-      type: "ACTION",
-    },
-    {
-      title: "Action 2",
-      type: "ACTION",
-    },
-    {
-      title: "Action 3",
-      type: "ACTION",
-    },
-  ],
+  templates: [],
   dragOverItem: null,
 };
 
 export const MainReducer = (
   state = initialState,
-  { type, card, id, details, startId }
+  { list, type, card, id, details, startId }
 ) => {
   switch (type) {
+    case SET_TEMPLATES:
+      return {
+        ...state,
+        templates: list,
+      };
     case ADD_CARD:
       card.id += Date.now();
       return {
@@ -124,9 +61,15 @@ export const MainReducer = (
         dragOverItem: id,
       };
     case REMOVE_CARD:
+      let newArrows = [...state.arrows];
+      newArrows = newArrows.filter(
+        (arrow) =>
+          (!arrow.start.includes(id) && !arrow.end.includes(id))
+      );
       return {
         ...state,
         cards: state.cards.filter((card) => card.id !== id),
+        arrows: newArrows
       };
     case REMOVE_ARROW:
       return {
@@ -144,12 +87,12 @@ export const MainReducer = (
         arrows = arrows.filter(
           (arrow) =>
             arrow.end !==
-            details.cardId + (details.label ? "-" + details.label : "")
+            details.cardId + (details.key ? "-" + details.key : "")
         );
         cards = cards.map((card) => {
           if (card.id === details.cardId && card.details?.form?.length > 0) {
             card.details.form.map((item) => {
-              if (item.label === details.label) {
+              if (item.key === details.key) {
                 item.fromCard = false;
               }
               return item;
@@ -158,11 +101,11 @@ export const MainReducer = (
           return card;
         });
       } else {
-        arrowEnds = details.cardId + (details.label ? "-" + details.label : "");
+        arrowEnds = details.cardId + (details.key ? "-" + details.key : "");
         cards = cards.map((card) => {
           if (card.id === details.cardId && card.details?.form?.length > 0) {
             card.details.form.map((item) => {
-              if (item.label === details.label) {
+              if (item.key === details.key) {
                 item.fromCard = true;
               }
               return item;

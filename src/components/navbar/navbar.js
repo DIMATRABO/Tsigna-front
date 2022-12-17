@@ -1,7 +1,6 @@
 import { setDragOverItem } from "actions/mainActions";
 import TabList from "components/tabList/tab-list";
-import httpClient from "httpClient/httpClient";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import "./navbar.scss";
 
@@ -11,16 +10,6 @@ const Navbar = () => {
   const [activeTab, setActiveTab] = useState();
   const [left, setLeft] = useState(10);
 
-  useEffect(() => {
-    httpClient
-      .get("/template/all")
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
   return (
     <>
       <div
@@ -50,9 +39,9 @@ const Navbar = () => {
           Operations
         </div>
         <div
-          className={`tab ${activeTab === "INDICATOR" ? "active" : ""}`}
+          className={`tab ${activeTab === "INPUT" ? "active" : ""}`}
           onClick={(e) => {
-            setActiveTab("INDICATOR");
+            setActiveTab("INPUT");
             setLeft(205);
             e.preventDefault();
             e.stopPropagation();
