@@ -159,20 +159,42 @@ const Card = ({ card, updateXarrow }) => {
                     <>
                       <input
                         type="radio"
-                        id="true"
+                        id={card?.id + "-true-" + field.key}
                         name={"boolean" + index}
                         value="true"
                         disabled={field.fromCard}
+                        onChange={(e) =>
+                          dispatch(
+                            setFieldValue({
+                              cardId: card.id,
+                              key: field.key,
+                              value: Boolean(e.target.value),
+                            })
+                          )
+                        }
                       />
-                      <label htmlFor="true">True</label>
+                      <label htmlFor={card?.id + "-true-" + field.key}>
+                        True
+                      </label>
                       <input
                         type="radio"
-                        id="false"
+                        id={card?.id + "-false-" + field.key}
                         name={"boolean" + index}
                         value="false"
                         disabled={field.fromCard}
+                        onChange={(e) =>
+                          dispatch(
+                            setFieldValue({
+                              cardId: card.id,
+                              key: field.key,
+                              value: Boolean(e.target.value),
+                            })
+                          )
+                        }
                       />
-                      <label htmlFor="false">False</label>
+                      <label htmlFor={card?.id + "-false-" + field.key}>
+                        False
+                      </label>
                     </>
                   )}
                   {field.type === "SELECT" && field.options?.length > 0 && (
