@@ -1,7 +1,7 @@
 import { setDragOverItem } from "actions/mainActions";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Item from "./item/item";
+import Template from "./template/template";
 import "./tab-list.scss";
 
 const TabList = ({ type, close, left }) => {
@@ -36,8 +36,8 @@ const TabList = ({ type, close, left }) => {
     >
       {reducer.templates
         ?.filter((template) => template.templateType === type)
-        .map((item, index) => (
-          <Item details={{ item, index }} key={index} />
+        .map((template, index) => (
+          <Template details={template} key={index} />
         ))}
     </div>
   );

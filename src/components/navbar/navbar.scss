@@ -19,4 +19,10 @@
             background-color: rgba(0, 0, 0, 0.4);
         }
     }
+    .disabled{
+        cursor: not-allowed;
+        &:hover{
+            background-color: rgba(202, 202, 202, 0.912);
+        }
+    }
 }

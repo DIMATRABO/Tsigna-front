@@ -8,6 +8,8 @@ import {
   SET_DRAG_OVER_ITEM,
   SET_FROM_CARD,
   BUILD_ARROW,
+  SET_TOP_LEFT,
+  SET_FIELD_VALUE,
 } from "../actions/mainActions";
 
 const initialState = {
@@ -63,13 +65,12 @@ export const MainReducer = (
     case REMOVE_CARD:
       let newArrows = [...state.arrows];
       newArrows = newArrows.filter(
-        (arrow) =>
-          (!arrow.start.includes(id) && !arrow.end.includes(id))
+        (arrow) => !arrow.start.includes(id) && !arrow.end.includes(id)
       );
       return {
         ...state,
         cards: state.cards.filter((card) => card.id !== id),
-        arrows: newArrows
+        arrows: newArrows,
       };
     case REMOVE_ARROW:
       return {
@@ -90,12 +91,12 @@ export const MainReducer = (
             details.cardId + (details.key ? "-" + details.key : "")
         );
         cards = cards.map((card) => {
-          if (card.id === details.cardId && card.details?.form?.length > 0) {
-            card.details.form.map((item) => {
-              if (item.key === details.key) {
-                item.fromCard = false;
+          if (card.id === details.cardId && card?.form?.length > 0) {
+            card.form.map((field) => {
+              if (field.key === details.key) {
+                field.fromCard = false;
               }
-              return item;
+              return field;
             });
           }
           return card;
@@ -103,12 +104,12 @@ export const MainReducer = (
       } else {
         arrowEnds = details.cardId + (details.key ? "-" + details.key : "");
         cards = cards.map((card) => {
-          if (card.id === details.cardId && card.details?.form?.length > 0) {
-            card.details.form.map((item) => {
-              if (item.key === details.key) {
-                item.fromCard = true;
+          if (card.id === details.cardId && card?.form?.length > 0) {
+            card.form.map((field) => {
+              if (field.key === details.key) {
+                field.fromCard = true;
               }
-              return item;
+              return field;
             });
           }
           return card;
@@ -131,6 +132,34 @@ export const MainReducer = (
           { id: arrowId, start: arrowStart, end: arrowEnd },
         ],
         headFromCard: null,
+      };
+    case SET_TOP_LEFT:
+      const cardsList = [...state.cards].map((card) => {
+        if (card.id === details.cardId) {
+          card.positionTop = details.top;
+          card.positionLeft = details.left;
+        }
+        return card;
+      });
+      return {
+        ...state,
+        cards: cardsList,
+      };
+    case SET_FIELD_VALUE:
+      const newCardsList = [...state.cards].map((card) => {
+        if (card.id === details.cardId && card?.form?.length > 0) {
+          card.form.map((field) => {
+            if (field.key === details.key) {
+              field.value = details.value;
+            }
+            return field;
+          });
+        }
+        return card;
+      });
+      return {
+        ...state,
+        cards: newCardsList,
       };
     default:
       return state;

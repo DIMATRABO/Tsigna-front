@@ -1,14 +1,22 @@
 import { setDragOverItem } from "actions/mainActions";
 import TabList from "components/tabList/tab-list";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./navbar.scss";
 
 const Navbar = () => {
   const dispatch = useDispatch();
 
+  const reducer = useSelector((reducer) => reducer.MainReducer);
   const [activeTab, setActiveTab] = useState();
   const [left, setLeft] = useState(10);
+  const [actionIsThere, setActionIsThere] = useState();
+
+  useEffect(() => {
+    setActionIsThere(
+      reducer.cards.find((card) => card?.templateType === "ACTION")
+    );
+  }, [reducer.cards]);
 
   return (
     <>
@@ -17,12 +25,16 @@ const Navbar = () => {
         onDragEnter={() => dispatch(setDragOverItem(null))}
       >
         <div
-          className={`tab ${activeTab === "ACTION" ? "active" : ""}`}
+          className={`tab ${activeTab === "ACTION" ? "active" : ""} ${
+            !!actionIsThere ? "disabled" : ""
+          }`}
           onClick={(e) => {
-            setActiveTab("ACTION");
-            setLeft(5);
-            e.preventDefault();
-            e.stopPropagation();
+            if (!actionIsThere) {
+              setActiveTab("ACTION");
+              setLeft(5);
+              e.preventDefault();
+              e.stopPropagation();
+            }
           }}
         >
           Ations

@@ -1,9 +1,9 @@
 import { addCard, setDragOverItem } from "actions/mainActions";
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./item.scss";
+import "./template.scss";
 
-const Item = ({ details }) => {
+const Template = ({ details, key }) => {
   const dispatch = useDispatch();
 
   const reducer = useSelector((reducer) => reducer.MainReducer);
@@ -21,10 +21,20 @@ const Item = ({ details }) => {
       dispatch(setDragOverItem(null));
       dispatch(
         addCard({
-          id: details.item?.title,
-          details: details.item,
-          top: e.pageY - 60,
-          left: e.pageX,
+          id: details?.id,
+          title: details?.title,
+          templateId: details?.id,
+          templateType: details?.templateType,
+          initialTop: e.pageY - 60,
+          initialLeft: e.pageX,
+          positionTop: e.pageY - 60,
+          positionLeft: e.pageX,
+          form: details?.form?.map((field) => {
+            return {
+              ...field,
+              fromCard: false,
+            };
+          }),
           focus: true,
         })
       );
@@ -34,14 +44,14 @@ const Item = ({ details }) => {
   return (
     <div
       className="item"
-      onDragStart={() => dragStart(details.index)}
+      onDragStart={() => dragStart(key)}
       onDragEnd={drop}
-      key={details.index}
+      key={key}
       onDragEnter={() => dispatch(setDragOverItem(null))}
       draggable
     >
-      {details.item?.title}
+      {details?.title}
     </div>
   );
 };
-export default Item;
+export default Template;

@@ -2,26 +2,28 @@ import Draggable from "react-draggable"; // The default
 import "./card.scss";
 import { IoIosCloseCircleOutline, IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { buildArrow, removeCard, setFromCard } from "../../actions/mainActions";
+import {
+  buildArrow,
+  removeCard,
+  setFieldValue,
+  setFromCard,
+  setTopLeft,
+} from "../../actions/mainActions";
 import { useEffect } from "react";
 
 const Card = ({ card, updateXarrow }) => {
   const dispatch = useDispatch();
   const reducer = useSelector((reducer) => reducer.MainReducer);
 
-  useEffect(() => {
-    const cardElemet = document.getElementById(card.id);
+  // useEffect(() => {
+  //   const cardElemet = document.getElementById(card.id);
 
-    let resizeObserver = new ResizeObserver(() => {
-      updateXarrow();
-    });
+  //   let resizeObserver = new ResizeObserver(() => {
+  //     updateXarrow();
+  //   });
 
-    resizeObserver.observe(cardElemet);
-  }, [card.id]);
-
-  const fromCard = (cardId, key, value) => {
-    dispatch(setFromCard({ cardId, key, value }));
-  };
+  //   resizeObserver.observe(cardElemet);
+  // }, [card.id]);
 
   const cardClass = (card) => {
     let className = "draggable-input";
@@ -38,18 +40,33 @@ const Card = ({ card, updateXarrow }) => {
     return className;
   };
 
+  const saveTopLeft = () => {
+    const cardElemet = document.getElementById(card.id);
+    const cardTop = cardElemet.offsetTop;
+    const cardLeft = cardElemet.offsetLeft;
+    var style = window.getComputedStyle(cardElemet);
+    const matrix =
+      style.transform || style.webkitTransform || style.mozTransform;
+    const matrixValues = matrix.match(/matrix.*\((.+)\)/)[1].split(", ");
+    const x = matrixValues[4];
+    const y = matrixValues[5];
+    dispatch(
+      setTopLeft({
+        cardId: card.id,
+        top: parseInt(cardTop) + parseInt(y),
+        left: parseInt(cardLeft) + parseInt(x),
+      })
+    );
+  };
+
+  const s = (e) => {
+    console.log(e);
+  };
   return (
-    <Draggable
-      onDrag={() => {
-        updateXarrow();
-      }}
-      onStop={updateXarrow}
-      bounds="parent"
-    >
+    <Draggable onDrag={updateXarrow} onStop={saveTopLeft} bounds="parent">
       {!!card && (
         <div
           id={card?.id}
-          onRes={updateXarrow}
           className={cardClass(card)}
           onClick={() => {
             if (
@@ -61,8 +78,8 @@ const Card = ({ card, updateXarrow }) => {
           }}
           key={card?.id}
           style={{
-            top: card?.top + "px",
-            left: card?.left + "px",
+            top: card?.initialTop + "px",
+            left: card?.initialLeft + "px",
           }}
         >
           {!reducer.headFromCard && (
@@ -94,53 +111,90 @@ const Card = ({ card, updateXarrow }) => {
               }}
             />
           )} */}
-          <div className="card-title">{card.details?.title}</div>
-          {card.details?.form &&
-            card.details.form.map((item, index) => (
+          <div className="card-title">{card?.title}</div>
+          {card?.form &&
+            card?.form.map((field, index) => (
               <div className="card-form-element" key={index}>
-                <div className="card-item-label">{item.key}:</div>
-                <label>
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      fromCard(card.id, item.key, e.target.checked)
-                    }
-                  />
-                  From card
-                </label>
+                <div className="card-item-label">{field.key}:</div>
+                {card?.templateType !== "INPUT" && (
+                  <label>
+                    <input
+                      type="checkbox"
+                      onChange={(e) =>
+                        dispatch(
+                          setFromCard({
+                            cardId: card.id,
+                            key: field.key,
+                            value: e.target.checked,
+                          })
+                        )
+                      }
+                    />
+                    From card
+                  </label>
+                )}
                 <div
                   className="card-item-value"
-                  id={card?.id + "-" + item.key}
+                  id={card?.id + "-" + field.key}
                 >
-                  {(item.type === "STRING" || item.type === "INTEGER" || item.type === "FLOAT") && (
-                    <input className="input" type="text"></input>
+                  {(field.type === "STRING" ||
+                    field.type === "INTEGER" ||
+                    field.type === "FLOAT") && (
+                    <input
+                      className="input"
+                      type="text"
+                      disabled={field.fromCard}
+                      onChange={(e) =>
+                        dispatch(
+                          setFieldValue({
+                            cardId: card.id,
+                            key: field.key,
+                            value: e.target.value,
+                          })
+                        )
+                      }
+                    ></input>
                   )}
-                  {item.type === "BOOLEAN" && (
+                  {field.type === "BOOLEAN" && (
                     <>
                       <input
                         type="radio"
                         id="true"
                         name={"boolean" + index}
                         value="true"
+                        disabled={field.fromCard}
                       />
-                      <label for="true">True</label>
+                      <label htmlFor="true">True</label>
                       <input
                         type="radio"
                         id="false"
                         name={"boolean" + index}
                         value="false"
+                        disabled={field.fromCard}
                       />
-                      <label for="false">False</label>
+                      <label htmlFor="false">False</label>
                     </>
                   )}
-                  {item.type === "SELECT" && item.options?.length > 0 && (
+                  {field.type === "SELECT" && field.options?.length > 0 && (
                     <select
                       className="input"
                       name="Options"
                       id={"options" + index}
+                      disabled={field.fromCard}
+                      onChange={(e) =>
+                        dispatch(
+                          setFieldValue({
+                            cardId: card.id,
+                            key: field.key,
+                            value: e.target.value,
+                          })
+                        )
+                      }
                     >
-                      {item.options.map((option) => (
-                        <option value={option}>{option}</option>
+                      {field.options?.map((option) => (
+                        <option key={option.id} value={option.key}>
+                          {option.label}
+                        </option>
                       ))}
                     </select>
                   )}
