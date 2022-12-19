@@ -59,7 +59,7 @@ const Main = () => {
           }
         });
       });
-      console.log(bot);
+      console.log(JSON.stringify(bot));
     }
   };
   return (

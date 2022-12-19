@@ -31,7 +31,10 @@ const Card = ({ card, updateXarrow }) => {
       className += " focus";
     }
     if (reducer.headFromCard) {
-      if (!reducer.headFromCard.includes(card.id)) {
+      if (
+        !reducer.headFromCard.includes(card.id) &&
+        card.templateType !== "ACTION"
+      ) {
         className += " wink up";
       } else {
         className += " up";
@@ -59,9 +62,6 @@ const Card = ({ card, updateXarrow }) => {
     );
   };
 
-  const s = (e) => {
-    console.log(e);
-  };
   return (
     <Draggable onDrag={updateXarrow} onStop={saveTopLeft} bounds="parent">
       {!!card && (
@@ -71,7 +71,8 @@ const Card = ({ card, updateXarrow }) => {
           onClick={() => {
             if (
               reducer.headFromCard &&
-              !reducer.headFromCard.includes(card.id)
+              !reducer.headFromCard.includes(card.id) &&
+              card.templateType !== "ACTION"
             ) {
               dispatch(buildArrow(card.id));
             }

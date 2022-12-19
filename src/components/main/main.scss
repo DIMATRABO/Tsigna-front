@@ -4,6 +4,9 @@
     overflow-y: auto;
     position: relative;
     .bot-name-label{
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100px;
         height: 50px;
         display: flex;
@@ -12,6 +15,9 @@
         font-size: 20px;
     }
     .bot-name-input{
+        position: absolute;
+        top: 50px;
+        left: 0;
         width: 130px;
         height: 25px;
         display: flex;
@@ -19,6 +25,9 @@
         justify-content: center;
     }
     .save-button{
+        position: absolute;
+        top: 85px;
+        left: 0;
         width: 100px;
         height: 35px;
         margin-top: 10px;
