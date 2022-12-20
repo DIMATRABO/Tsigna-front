@@ -5,13 +5,12 @@ import { setAuthenticated, setUserInfo } from "actions/mainActions";
 import store from "store";
 import jwt_decode from "jwt-decode";
 import httpClient from "httpClient/httpClient";
-import SignIn from "components/signIn/SignIn";
 
 const Login = () => {
   const dispatch = useDispatch();
 
   const savedUsername = store.get("su");
-  const [username, setUserName] = useState(savedUsername);
+  const [username, setUsername] = useState(savedUsername);
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(!!savedUsername);
@@ -45,63 +44,57 @@ const Login = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="form-container">
-        <div className="fields">
-          <div className="title">Login</div>
-          <div className="field">
-            <input
-              className="login-input"
-              type="text"
-              id="username"
-              defaultValue={username}
-              placeholder="Username"
-              onChange={(e) => setUserName(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-          <div className="field">
-            <input
-              className="login-input"
-              id="password"
-              placeholder="Password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-          <div className="checkbox-field">
-            <input
-              id="rememberme"
-              type="checkbox"
-              onChange={(e) => {
-                if (e.target.checked === false) store.remove("su");
-                setRememberMe(e.target.checked);
-              }}
-              checked={rememberMe}
-              label="Se souvenir de moi"
-              color="white"
-            />
-            <label htmlFor="rememberme">Remember username</label>
-          </div>
-          <div className="field">
-            <>
-              {!loading && (
-                <SignIn
-                  label={"Se connecter"}
-                  handleSubmit={handleSubmit}
-                  isDisabled={!username || !password}
-                  backgroundColor="white"
-                  color="black"
-                />
-              )}
-              {loading && <div>Loading...</div>}
-            </>
-          </div>
-          <div className="footer">Powered By Anas l3adim</div>
+    <>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h1 className="login-form__title">Login</h1>
+        <div className="login-form__field">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            onKeyDown={handleKeyDown}
+          />
         </div>
-      </div>
-    </div>
+        <div className="login-form__field">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div className="login-form__subtitle">
+          <input
+            id="rememberme"
+            type="checkbox"
+            onChange={(e) => {
+              if (e.target.checked === false) store.remove("su");
+              setRememberMe(e.target.checked);
+            }}
+            checked={rememberMe}
+            label="Se souvenir de moi"
+            color="white"
+          />
+          <label htmlFor="rememberme">Remember me</label>
+        </div>
+        {!loading && (
+          <button
+            type="submit"
+            className="login-form__button"
+            disabled={!username || !password}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        )}
+        {loading && <div>Loading...</div>}
+      </form>
+      <div className="footer">Powered By Anas l3adim</div>
+    </>
   );
 };
 
