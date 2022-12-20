@@ -4,12 +4,15 @@ import {
   FOCUS_CARD,
   REMOVE_CARD,
   REMOVE_ARROW,
+  REMOVE_DRAFT,
   REMOVE_FOCUS_CARD,
   SET_DRAG_OVER_ITEM,
   SET_FROM_CARD,
   BUILD_ARROW,
   SET_TOP_LEFT,
   SET_FIELD_VALUE,
+  SET_AUTHENTICATED,
+  SET_USER_INFO,
 } from "../actions/mainActions";
 
 const initialState = {
@@ -18,11 +21,12 @@ const initialState = {
   arrows: [],
   templates: [],
   dragOverItem: null,
+  authenticated: false,
 };
 
 export const MainReducer = (
   state = initialState,
-  { list, type, card, id, details, startId }
+  { list, type, card, id, details, startId, authenticated, userInfo }
 ) => {
   switch (type) {
     case SET_TEMPLATES:
@@ -79,6 +83,10 @@ export const MainReducer = (
           arrow.focus = false;
           return card;
         }),
+      };
+    case REMOVE_DRAFT:
+      return {
+        ...initialState,
       };
     case SET_FROM_CARD:
       let arrows = [...state.arrows];
@@ -160,6 +168,16 @@ export const MainReducer = (
       return {
         ...state,
         cards: newCardsList,
+      };
+    case SET_AUTHENTICATED:
+      return {
+        ...state,
+        authenticated: authenticated,
+      };
+    case SET_USER_INFO:
+      return {
+        ...state,
+        userInfo: userInfo,
       };
     default:
       return state;

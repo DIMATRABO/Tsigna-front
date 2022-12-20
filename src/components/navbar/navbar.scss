@@ -4,6 +4,7 @@
     background-color: rgba(202, 202, 202, 0.912);
     display: flex;
     align-items: center;
+    position: relative;
     .tab{
         display: flex;
         align-items: center;
@@ -24,5 +25,9 @@
         &:hover{
             background-color: rgba(202, 202, 202, 0.912);
         }
+    }
+    .logout{
+        position: absolute;
+        right: 0;
     }
 }

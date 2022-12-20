@@ -2,35 +2,50 @@ import "./App.scss";
 import Main from "./components/main/main";
 import Navbar from "./components/navbar/navbar";
 import PopUp from "components/popUp/pop-up";
-import { selectPopUpReducer } from "./reducers/selectors";
-import httpClient from "httpClient/httpClient";
+import {
+  selectAuthenticated,
+  selectPopUpReducer,
+  selectMainReducer,
+} from "./reducers/selectors";
+import store from "store";
+import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { setTemplates } from "actions/mainActions";
+import { setAuthenticated, setUserInfo } from "actions/mainActions";
+import Login from "components/login/login";
 
 const App = () => {
   const popUp = useSelector(selectPopUpReducer);
-  const reducer = useSelector((reducer) => reducer.MainReducer);
+  const reducer = useSelector(selectMainReducer);
   const dispatch = useDispatch();
 
+  const authenticated = useSelector(selectAuthenticated);
+  const storeToken = store.get("token");
+
   useEffect(() => {
-    //fill templates
-    httpClient
-      .get("/template/all")
-      .then((res) => {
-        dispatch(setTemplates(res.data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (storeToken) {
+      try {
+        const decoded_token = jwt_decode(storeToken);
+        dispatch(setAuthenticated(true));
+        dispatch(setUserInfo(decoded_token));
+      } catch {
+        console.log("error");
+        store.remove("token");
+      }
+    }
+  }, [dispatch, storeToken]);
 
   return (
     <div className="App">
-      <Navbar />
-      <Main />
-      {popUp.show && <PopUp content={popUp.content} />}
-      {reducer.headFromCard && <div className="blur-layer" />}
+      {(!storeToken || !authenticated) && <Login />}
+      {storeToken && authenticated && (
+        <>
+          <Navbar />
+          <Main />
+          {popUp.show && <PopUp content={popUp.content} />}
+          {reducer.headFromCard && <div className="blur-layer" />}
+        </>
+      )}
     </div>
   );
 };

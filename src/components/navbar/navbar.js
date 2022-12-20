@@ -1,7 +1,12 @@
-import { setDragOverItem } from "actions/mainActions";
+import {
+  removeDraft,
+  setAuthenticated,
+  setDragOverItem,
+} from "actions/mainActions";
 import TabList from "components/tabList/tab-list";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import store from "store";
 import "./navbar.scss";
 
 const Navbar = () => {
@@ -60,6 +65,16 @@ const Navbar = () => {
           }}
         >
           Indicateurs
+        </div>
+        <div
+          className="tab logout"
+          onClick={() => {
+            store.remove("token");
+            store.remove("flag");
+            dispatch(removeDraft());
+          }}
+        >
+          Log out
         </div>
       </div>
       {activeTab && (

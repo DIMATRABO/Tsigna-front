@@ -2,14 +2,27 @@ import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import Card from "../card/card";
 import "./main.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setDragOverItem } from "../../actions/mainActions";
-import { useState } from "react";
+import { setDragOverItem, setTemplates } from "../../actions/mainActions";
+import { useEffect, useState } from "react";
+import httpClient from "httpClient/httpClient";
 
 const Main = () => {
   const updateXarrow = useXarrow();
   const dispatch = useDispatch();
   const [botName, setBotName] = useState();
   const reducer = useSelector((reducer) => reducer.MainReducer);
+
+  useEffect(() => {
+    //fill templates
+    httpClient
+      .get("/template/all")
+      .then((res) => {
+        dispatch(setTemplates(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const dragEnter = (e) => {
     const dragOver = e.target.id;

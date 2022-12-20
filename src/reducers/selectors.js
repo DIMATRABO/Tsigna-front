@@ -11,3 +11,4 @@
 
 export const selectMainReducer = (state) => state.MainReducer;
 export const selectPopUpReducer = (state) => state.PopUpReducer;
+export const selectAuthenticated = (state) => state.MainReducer.authenticated;
