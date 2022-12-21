@@ -130,7 +130,7 @@ const Main = () => {
         bot.cards.forEach((card) => {
           if (arrow.end.includes(card.id)) {
             card.form.forEach((field) => {
-              if (arrow.end.includes(field.key)) {
+              if (arrow.end === card?.id + "-" + field.key) {
                 field.value = arrow.start;
               }
             });
