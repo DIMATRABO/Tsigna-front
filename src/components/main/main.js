@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import httpClient from "httpClient/httpClient";
 import { useNavigate, useParams } from "react-router-dom";
 import { selectCards, selectMainReducer } from "reducers/selectors";
+import { buildArrowsList, buildCardsList } from "utils/utils";
 
 const Main = () => {
   const updateXarrow = useXarrow();
@@ -40,27 +41,8 @@ const Main = () => {
         .get(`/bot/id/${botId}`)
         .then((response) => {
           setBotName(response.data?.name);
-          console.log(response.data);
-          if (!!response.data.cards) {
-            dispatch(
-              setCards(
-                response.data.cards.map((card) => {
-                  return {
-                    id: card?.id,
-                    title: card?.template?.title,
-                    templateId: card?.template?.id,
-                    templateType: card?.template?.templateType,
-                    initialTop: parseInt(card?.positionTop),
-                    initialLeft: parseInt(card?.positionLeft),
-                    positionTop: parseInt(card?.positionTop),
-                    positionLeft: parseInt(card?.positionLeft),
-                    form: [...card?.fieldValues],
-                    focus: true,
-                  };
-                })
-              )
-            );
-          }
+          !!response.data.cards &&
+            dispatch(setCards(buildCardsList(response.data.cards)));
         })
         .catch(() => {
           navigate("/");
@@ -71,19 +53,7 @@ const Main = () => {
 
   useEffect(() => {
     if (!!botId && cards.length > 0 && loading) {
-      let arrows = [];
-      cards.forEach((card) => {
-        card.form.forEach((field) => {
-          if (field.fromCard) {
-            arrows.push({
-              id: card?.id + "-" + field.key,
-              start: field.value,
-              end: card?.id + "-" + field.key,
-            });
-          }
-        });
-      });
-      dispatch(setArrows(arrows));
+      dispatch(setArrows(buildArrowsList(cards)));
       setLoading(false);
     }
   }, [botId, cards, loading]);
@@ -130,7 +100,7 @@ const Main = () => {
         bot.cards.forEach((card) => {
           if (arrow.end.includes(card.id)) {
             card.form.forEach((field) => {
-              if (arrow.end === card?.id + "-" + field.key) {
+              if (arrow.end === card.id + "-" + field.key) {
                 field.value = arrow.start;
               }
             });
