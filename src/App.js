@@ -1,6 +1,4 @@
 import "./App.scss";
-import Main from "./components/main/main";
-import Navbar from "./components/navbar/navbar";
 import PopUp from "components/popUp/pop-up";
 import {
   selectAuthenticated,
@@ -13,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setAuthenticated, setUserInfo } from "actions/mainActions";
 import Login from "components/login/login";
+import Gateway from "components/gateway/gateway";
 
 const App = () => {
   const popUp = useSelector(selectPopUpReducer);
@@ -40,8 +39,7 @@ const App = () => {
       {(!storeToken || !authenticated) && <Login />}
       {storeToken && authenticated && (
         <>
-          <Navbar />
-          <Main />
+          <Gateway />
           {popUp.show && <PopUp content={popUp.content} />}
           {reducer.headFromCard && <div className="blur-layer" />}
         </>

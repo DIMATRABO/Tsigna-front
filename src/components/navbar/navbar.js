@@ -1,16 +1,13 @@
-import {
-  removeDraft,
-  setAuthenticated,
-  setDragOverItem,
-} from "actions/mainActions";
+import { removeDraft, setDragOverItem } from "actions/mainActions";
 import TabList from "components/tabList/tab-list";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import store from "store";
+import { useNavigate } from "react-router-dom";
 import "./navbar.scss";
 
 const Navbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const reducer = useSelector((reducer) => reducer.MainReducer);
   const [activeTab, setActiveTab] = useState();
@@ -69,12 +66,11 @@ const Navbar = () => {
         <div
           className="tab logout"
           onClick={() => {
-            store.remove("token");
-            store.remove("flag");
+            navigate("/");
             dispatch(removeDraft());
           }}
         >
-          Log out
+          Home
         </div>
       </div>
       {activeTab && (

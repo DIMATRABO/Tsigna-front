@@ -37,7 +37,7 @@ const TabList = ({ type, close, left }) => {
       {reducer.templates
         ?.filter((template) => template.templateType === type)
         .map((template, index) => (
-          <Template details={template} key={index} />
+          <Template details={template} key={index} closeList={close} />
         ))}
     </div>
   );

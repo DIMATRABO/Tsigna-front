@@ -2,7 +2,8 @@ import store from "store";
 // const DEBUG = process.env.REACT_APP_NODE_ENV !== "production";
 const errorInterceptor = (axiosInstance) => {
   axiosInstance.interceptors.response.use({}, (error) => {
-    if (error?.response?.data.status === 401) {
+    console.log(error);
+    if (error?.request?.status === 401) {
       store.remove("token");
     }
     // else if (error?.status?.code === 403) {

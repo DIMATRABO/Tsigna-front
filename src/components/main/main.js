@@ -2,15 +2,27 @@ import Xarrow, { useXarrow, Xwrapper } from "react-xarrows";
 import Card from "../card/card";
 import "./main.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setDragOverItem, setTemplates } from "../../actions/mainActions";
+import {
+  removeDraft,
+  setArrows,
+  setCards,
+  setDragOverItem,
+  setTemplates,
+} from "../../actions/mainActions";
 import { useEffect, useState } from "react";
 import httpClient from "httpClient/httpClient";
+import { useNavigate, useParams } from "react-router-dom";
+import { selectCards, selectMainReducer } from "reducers/selectors";
 
 const Main = () => {
   const updateXarrow = useXarrow();
+  const { botId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [botName, setBotName] = useState();
-  const reducer = useSelector((reducer) => reducer.MainReducer);
+  const [loading, setLoading] = useState(true);
+  const reducer = useSelector(selectMainReducer);
+  const cards = useSelector(selectCards);
 
   useEffect(() => {
     //fill templates
@@ -22,7 +34,59 @@ const Main = () => {
       .catch((err) => {
         console.log(err);
       });
+
+    if (!!botId) {
+      httpClient
+        .get(`/bot/id/${botId}`)
+        .then((response) => {
+          setBotName(response.data?.name);
+          console.log(response.data);
+          if (!!response.data.cards) {
+            dispatch(
+              setCards(
+                response.data.cards.map((card) => {
+                  return {
+                    id: card?.id,
+                    title: card?.template?.title,
+                    templateId: card?.template?.id,
+                    templateType: card?.template?.templateType,
+                    initialTop: parseInt(card?.positionTop),
+                    initialLeft: parseInt(card?.positionLeft),
+                    positionTop: parseInt(card?.positionTop),
+                    positionLeft: parseInt(card?.positionLeft),
+                    form: [...card?.fieldValues],
+                    focus: true,
+                  };
+                })
+              )
+            );
+          }
+        })
+        .catch(() => {
+          navigate("/");
+          dispatch(removeDraft());
+        });
+    }
   }, []);
+
+  useEffect(() => {
+    if (!!botId && cards.length > 0 && loading) {
+      let arrows = [];
+      cards.forEach((card) => {
+        card.form.forEach((field) => {
+          if (field.fromCard) {
+            arrows.push({
+              id: card?.id + "-" + field.key,
+              start: field.value,
+              end: card?.id + "-" + field.key,
+            });
+          }
+        });
+      });
+      dispatch(setArrows(arrows));
+      setLoading(false);
+    }
+  }, [botId, cards, loading]);
 
   const dragEnter = (e) => {
     const dragOver = e.target.id;
@@ -35,8 +99,9 @@ const Main = () => {
   };
 
   const saveBot = () => {
-    if (!!botName) {
+    if (!!botName && reducer.cards?.length > 0) {
       const bot = {
+        id: botId,
         name: botName,
         is_on: true,
         cards: reducer.cards?.map((card) => {
@@ -72,7 +137,16 @@ const Main = () => {
           }
         });
       });
-      console.log(JSON.stringify(bot));
+
+      httpClient
+        .post("bot/save", bot)
+        .then(() => {
+          navigate("/");
+          dispatch(removeDraft());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
   return (
@@ -87,10 +161,11 @@ const Main = () => {
       <input
         className="bot-name-input"
         type="text"
+        value={botName}
         onChange={(e) => setBotName(e.target.value)}
       ></input>
 
-      {botName && (
+      {botName && reducer.cards?.length > 0 && (
         <div className="save-button" onClick={saveBot}>
           Save
         </div>

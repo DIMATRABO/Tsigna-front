@@ -13,6 +13,8 @@ import {
   SET_FIELD_VALUE,
   SET_AUTHENTICATED,
   SET_USER_INFO,
+  SET_CARDS,
+  SET_ARROWS,
 } from "../actions/mainActions";
 
 const initialState = {
@@ -35,10 +37,19 @@ export const MainReducer = (
         templates: list,
       };
     case ADD_CARD:
-      card.id += Date.now();
       return {
         ...state,
         cards: [...state.cards, card],
+      };
+    case SET_CARDS:
+      return {
+        ...state,
+        cards: [...list],
+      };
+    case SET_ARROWS:
+      return {
+        ...state,
+        arrows: [...list],
       };
     case FOCUS_CARD:
       const cardsCopy = [...state.cards].map((card) => {
@@ -87,6 +98,7 @@ export const MainReducer = (
     case REMOVE_DRAFT:
       return {
         ...initialState,
+        authenticated: state.authenticated,
       };
     case SET_FROM_CARD:
       let arrows = [...state.arrows];

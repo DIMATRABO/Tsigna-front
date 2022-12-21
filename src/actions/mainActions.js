@@ -1,5 +1,7 @@
 export const SET_TEMPLATES = "SET_TEMPLATES";
 export const ADD_CARD = "ADD_CARD";
+export const SET_CARDS = "SET_CARDS";
+export const SET_ARROWS = "SET_ARROWS";
 export const REMOVE_CARD = "REMOVE_CARD";
 export const REMOVE_ARROW = "REMOVE_ARROW";
 export const REMOVE_DRAFT = "REMOVE_DRAFT";
@@ -15,6 +17,8 @@ export const SET_USER_INFO = "SET_USER_INFO";
 
 export const setTemplates = (list) => ({ type: SET_TEMPLATES, list });
 export const addCard = (card) => ({ type: ADD_CARD, card });
+export const setCards = (list) => ({ type: SET_CARDS, list });
+export const setArrows = (list) => ({ type: SET_ARROWS, list });
 export const removeCard = (id) => ({ type: REMOVE_CARD, id });
 export const removeArrow = (id) => ({ type: REMOVE_ARROW, id });
 export const removeDraft = () => ({ type: REMOVE_DRAFT });

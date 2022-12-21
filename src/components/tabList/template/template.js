@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./template.scss";
 
-const Template = ({ details, key }) => {
+const Template = ({ details, key, closeList }) => {
   const dispatch = useDispatch();
 
   const reducer = useSelector((reducer) => reducer.MainReducer);
@@ -17,11 +17,12 @@ const Template = ({ details, key }) => {
   const drop = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    closeList();
     if (reducer.dragOverItem === "cards-container") {
       dispatch(setDragOverItem(null));
       dispatch(
         addCard({
-          id: details?.id,
+          id: details?.id + Date.now(),
           title: details?.title,
           templateId: details?.id,
           templateType: details?.templateType,
