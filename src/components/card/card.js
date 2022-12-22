@@ -9,7 +9,6 @@ import {
   setFromCard,
   setTopLeft,
 } from "../../actions/mainActions";
-import { useEffect } from "react";
 
 const Card = ({ card, updateXarrow }) => {
   const dispatch = useDispatch();
@@ -121,6 +120,7 @@ const Card = ({ card, updateXarrow }) => {
                   <label>
                     <input
                       type="checkbox"
+                      checked={field.fromCard}
                       onChange={(e) =>
                         dispatch(
                           setFromCard({
@@ -138,12 +138,46 @@ const Card = ({ card, updateXarrow }) => {
                   className="card-item-value"
                   id={card?.id + "-" + field.key}
                 >
-                  {(field.type === "STRING" ||
-                    field.type === "INTEGER" ||
-                    field.type === "FLOAT") && (
+                  {field.type === "INTEGER" && (
+                    <input
+                      className="input"
+                      type="number"
+                      disabled={field.fromCard}
+                      value={!card.fromCard && field.value}
+                      onChange={(e) =>
+                        dispatch(
+                          setFieldValue({
+                            cardId: card.id,
+                            key: field.key,
+                            value: e.target.value,
+                          })
+                        )
+                      }
+                    ></input>
+                  )}
+                  {field.type === "STRING" && (
                     <input
                       className="input"
                       type="text"
+                      disabled={field.fromCard}
+                      value={!card.fromCard && field.value}
+                      onChange={(e) =>
+                        dispatch(
+                          setFieldValue({
+                            cardId: card.id,
+                            key: field.key,
+                            value: e.target.value,
+                          })
+                        )
+                      }
+                    ></input>
+                  )}
+                  {field.type === "FLOAT" && (
+                    <input
+                      className="input"
+                      type="number"
+                      step="any"
+                      value={!card.fromCard && field.value}
                       disabled={field.fromCard}
                       onChange={(e) =>
                         dispatch(
@@ -162,14 +196,17 @@ const Card = ({ card, updateXarrow }) => {
                         type="radio"
                         id={card?.id + "-true-" + field.key}
                         name={"boolean" + index}
-                        value="true"
+                        value={true}
                         disabled={field.fromCard}
-                        onChange={(e) =>
+                        checked={
+                          !card.fromCard && Boolean(field.value) === true
+                        }
+                        onChange={() =>
                           dispatch(
                             setFieldValue({
                               cardId: card.id,
                               key: field.key,
-                              value: Boolean(e.target.value),
+                              value: true,
                             })
                           )
                         }
@@ -181,14 +218,17 @@ const Card = ({ card, updateXarrow }) => {
                         type="radio"
                         id={card?.id + "-false-" + field.key}
                         name={"boolean" + index}
-                        value="false"
+                        value={false}
+                        checked={
+                          !card.fromCard && Boolean(field.value) === false
+                        }
                         disabled={field.fromCard}
-                        onChange={(e) =>
+                        onChange={() =>
                           dispatch(
                             setFieldValue({
                               cardId: card.id,
                               key: field.key,
-                              value: Boolean(e.target.value),
+                              value: false,
                             })
                           )
                         }
@@ -203,6 +243,7 @@ const Card = ({ card, updateXarrow }) => {
                       className="input"
                       name="Options"
                       id={"options" + index}
+                      value={!card.fromCard && field.value}
                       disabled={field.fromCard}
                       onChange={(e) =>
                         dispatch(

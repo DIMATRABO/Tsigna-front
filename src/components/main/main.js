@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import httpClient from "httpClient/httpClient";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectCards, selectMainReducer } from "reducers/selectors";
+import { selectMainReducer } from "reducers/selectors";
 import { buildArrowsList, buildCardsList } from "utils/utils";
 
 const Main = () => {
@@ -21,9 +21,7 @@ const Main = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [botName, setBotName] = useState();
-  const [loading, setLoading] = useState(true);
   const reducer = useSelector(selectMainReducer);
-  const cards = useSelector(selectCards);
 
   useEffect(() => {
     //fill templates
@@ -41,22 +39,18 @@ const Main = () => {
         .get(`/bot/id/${botId}`)
         .then((response) => {
           setBotName(response.data?.name);
-          !!response.data.cards &&
-            dispatch(setCards(buildCardsList(response.data.cards)));
+          if (!!response.data.cards) {
+            const cards = buildCardsList(response.data.cards);
+            dispatch(setCards(cards));
+            dispatch(setArrows(buildArrowsList(cards)));
+          }
         })
         .catch(() => {
           navigate("/");
           dispatch(removeDraft());
         });
     }
-  }, []);
-
-  useEffect(() => {
-    if (!!botId && cards.length > 0 && loading) {
-      dispatch(setArrows(buildArrowsList(cards)));
-      setLoading(false);
-    }
-  }, [botId, cards, loading]);
+  }, [botId]);
 
   const dragEnter = (e) => {
     const dragOver = e.target.id;
