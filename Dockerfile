@@ -1,10 +1,10 @@
-# Use an official Node.js image as the base image
-FROM node:14-alpine
+# Use an official Node.js LTS image as the base image
+FROM node:16-alpine
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
+# Copy package.json and yarn.lock to the container
 COPY package.json yarn.lock /app/
 
 # Install project dependencies
