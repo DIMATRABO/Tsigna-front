@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Badge,
   Button,
+  Divider,
   Flex,
   Group,
   Select,
@@ -28,62 +29,61 @@ const records = [
   },
 ];
 
-const editUser = () => {
-  modals.open({
-    title: "Edit User",
-    size: "lg",
-
-    children: (
-      <Flex w="100%" direction="column" gap={20}>
-        <TextInput
-          placeholder="Your name"
-          label="Name"
-          w="100%"
-          defaultValue={records[0].name}
-        />
-        <TextInput
-          placeholder="Your email"
-          label="Email"
-          w="100%"
-          defaultValue={records[0].email}
-        />
-
-        <Select
-          placeholder="Select your subscription"
-          label="Subscription"
-          w="100%"
-          defaultValue={records[0].subscription}
-          data={[
-            { value: "Subscription 1", label: "Subscription 1" },
-            { value: "Subscription 2", label: "Subscription 2" },
-            { value: "Subscription 3", label: "Subscription 3" },
-          ]}
-        />
-
-        <Button color="violet" variant="light" fullWidth type="submit">
-          Save
-        </Button>
-      </Flex>
-    ),
-  });
-};
-
-const deleteUsers = () => {
-  modals.openConfirmModal({
-    title: "Delete User",
-    children: (
-      <Text size="sm">
-        This action is so important that you are required to confirm it with a
-        modal. Please click one of these buttons to proceed.
-      </Text>
-    ),
-    confirmProps: { color: "red" },
-
-    labels: { confirm: "Confirm", cancel: "Cancel" },
-  });
-};
-
 function Admin() {
+  const editUser = () =>
+    modals.open({
+      title: "Edit User",
+      size: "lg",
+
+      children: (
+        <Flex w="100%" direction="column" gap={20}>
+          <TextInput
+            placeholder="Your name"
+            label="Name"
+            size="md"
+            // w="100%"
+            defaultValue={records[0].name}
+          />
+          <TextInput
+            placeholder="Your email"
+            label="Email"
+            // w="100%"
+            defaultValue={records[0].email}
+          />
+
+          <Select
+            placeholder="Select your subscription"
+            label="Subscription"
+            // w="100%"
+            defaultValue={records[0].subscription}
+            data={[
+              { value: "Subscription 1", label: "Subscription 1" },
+              { value: "Subscription 2", label: "Subscription 2" },
+              { value: "Subscription 3", label: "Subscription 3" },
+            ]}
+          />
+
+          <Button color="violet" variant="light" fullWidth type="submit">
+            Save
+          </Button>
+        </Flex>
+      ),
+    });
+
+  const deleteUsers = () =>
+    modals.openConfirmModal({
+      title: "Delete User",
+      children: (
+        <Text size="sm">
+          This action is so important that you are required to confirm it with a
+          modal. Please click one of these buttons to proceed.
+        </Text>
+      ),
+      confirmProps: { color: "red" },
+
+      labels: { confirm: "Confirm", cancel: "Cancel" },
+    });
+
   return (
     <Flex
       direction="column"
@@ -121,7 +121,7 @@ function Admin() {
             render: () => (
               <Group spacing={4} position="left" noWrap>
                 <ActionIcon color="blue">
-                  <IconEdit size={16} onClick={() => editUser()} />
+                  <IconEdit size={16} onClick={editUser} />
                 </ActionIcon>
                 <ActionIcon color="red">
                   <IconTrash size={16} onClick={() => deleteUsers()} />

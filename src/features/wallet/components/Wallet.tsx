@@ -12,7 +12,6 @@ import {
   SimpleGrid,
 } from "@mantine/core";
 import { useStyles } from "components/shared/styles";
-import DataTableComponent from "components/shared/DataTableComponent";
 
 type Props = {};
 
@@ -140,7 +139,6 @@ const Wallet = ({}: Props) => {
             </Card>
           ))}
         </SimpleGrid>
-        <DataTableComponent />
       </Paper>
     </Flex>
   );

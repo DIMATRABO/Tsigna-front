@@ -27,7 +27,7 @@ const AppNavbar = () => {
 
   return (
     <Navbar p="xs" width={{ base: 70, sm: 250, md: 250, lg: 250 }}>
-      <Navbar.Section className={classes.section} component={ScrollArea} grow>
+      <Navbar.Section className={classes.section} grow>
         <div className={classes.mainLinks}>
           <MainLinks links={links} />
         </div>

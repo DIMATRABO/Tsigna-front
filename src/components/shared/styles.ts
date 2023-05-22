@@ -1,4 +1,4 @@
-import { createStyles, getStylesRef, rem } from "@mantine/core";
+import { createStyles, rem } from "@mantine/core";
 
 export const useStyles = createStyles((theme) => ({
   navbar: {
@@ -27,7 +27,7 @@ export const useStyles = createStyles((theme) => ({
 
     "&:hover": {
       backgroundColor: theme.colors.violet,
-      color: theme.white,
+      color: "white",
     },
   },
   mainLinkInner: {
