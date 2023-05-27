@@ -1,5 +1,5 @@
 import { useForm, zodResolver } from "@mantine/form";
-import { LoginSchemaType, loginSchema } from "../schemas/authSchemas";
+import { LoginSchemaType, loginSchema } from "../../auth/schemas/authSchemas";
 import {
   Anchor,
   Button,
@@ -11,86 +11,21 @@ import {
   TextInput,
   Title,
   Text,
-  LoadingOverlay,
 } from "@mantine/core";
 import { useStyles } from "components/shared/styles";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "services/auth";
-import { useMutation } from "@tanstack/react-query";
-import { showNotification } from "@mantine/notifications";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "context/user";
-
 type Props = {};
 
-const Login = ({}: Props) => {
-  const {
-    setAccessToken,
-    isLoading: loadingUser,
-    user,
-  } = useContext(AuthContext);
+const AdminLogin = ({}: Props) => {
   const form = useForm<LoginSchemaType>({
     validate: zodResolver(loginSchema),
-    initialValues: {
-      email: "",
-      password: "",
-      keepLoggedIn: false,
-    },
   });
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  const { mutate, isLoading } = useMutation(
-    (values: LoginSchemaType) => loginUser(values.email, values.password),
-    {
-      onSuccess: (data) => {
-        console.log("data", data);
-        if (form.values.keepLoggedIn) {
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("refresh_token", data.refresh_token);
-        } else {
-          sessionStorage.setItem("access_token", data.access_token);
-          sessionStorage.setItem("refresh_token", data.refresh_token);
-        }
-
-        setAccessToken(data.access_token);
-        showNotification({
-          title: "Logged in!",
-          message: "You are now logged in.",
-          color: "teal",
-        });
-        // navigate("/dashboard");
-      },
-      onError: (error) => {
-        showNotification({
-          title: "Error",
-          message: "Something went wrong. Please try again later",
-          color: "red",
-        });
-      },
-    }
-  );
-
   const onSubmit = (values: LoginSchemaType) => {
-    mutate(values);
+    navigate("/dashboard");
   };
-
-  console.log("user", user);
-  console.log("loadingUser", loadingUser);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
-
-  if (loadingUser) {
-    return <LoadingOverlay visible />;
-  }
-
-  if (user) {
-    return null;
-  }
 
   return (
     <Container
@@ -113,7 +48,7 @@ const Login = ({}: Props) => {
             fontWeight: 700,
           })}
         >
-          Welcome back!
+          Welcome back Admin!
         </Title>
 
         <form
@@ -146,13 +81,7 @@ const Login = ({}: Props) => {
               Forgot password?
             </Anchor>
           </Group>
-          <Button
-            fullWidth
-            mt="xl"
-            type="submit"
-            className={classes.button}
-            loading={isLoading}
-          >
+          <Button fullWidth mt="xl" type="submit" className={classes.button}>
             Sign in
           </Button>
         </form>
@@ -167,4 +96,4 @@ const Login = ({}: Props) => {
   );
 };
 
-export default Login;
+export default AdminLogin;

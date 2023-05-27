@@ -24,6 +24,8 @@ import { Bar, Line } from "react-chartjs-2";
 import "chart.js/auto";
 import { DataTable } from "mantine-datatable";
 import "./test.css";
+import { theme } from "config/mantine";
+import { useEffect } from "react";
 
 type Props = {};
 
@@ -127,6 +129,7 @@ const chartData = {
       label: "Revenue",
       data: [50, 70, 40, 60, 80],
       backgroundColor: "rgba(153, 102, 255, 0.5)", // Violet color
+      borderColor: "rgba(153, 102, 255, 0.5)",
     },
   ],
 };
@@ -136,6 +139,14 @@ const options = {
     y: {
       beginAtZero: true,
       max: 100,
+      grid: {
+        color: "#80808040",
+      },
+    },
+    x: {
+      grid: {
+        color: "#80808040",
+      },
     },
   },
 };

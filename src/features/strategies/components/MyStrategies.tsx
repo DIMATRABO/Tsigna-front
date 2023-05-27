@@ -10,8 +10,9 @@ import {
 } from "@mantine/core";
 import { IconUserCircle, IconStar, IconCoin } from "@tabler/icons-react";
 import { useStyles } from "components/shared/styles";
+import { useState } from "react";
 
-function MyStrategies() {
+function MyStrategies({ stratNumber }: { stratNumber: number }) {
   const { classes } = useStyles();
 
   return (
@@ -25,7 +26,7 @@ function MyStrategies() {
           { maxWidth: "55rem", cols: 1, spacing: "sm" },
         ]}
       >
-        {Array(6).fill(
+        {Array(stratNumber).fill(
           <Paper
             withBorder
             p="md"
@@ -37,7 +38,7 @@ function MyStrategies() {
           >
             <Group position="apart" noWrap>
               <Text weight={500} size="lg"></Text>
-              <IconStar size="1.4rem" stroke={1.5} />
+              <IconStar size="1.2rem" />
             </Group>
             <Flex align="center" mt="sm" gap={10}>
               <Flex gap={5}>
@@ -53,8 +54,8 @@ function MyStrategies() {
                 </Text>
               </Flex>
               <Flex gap={5}>
-                <IconUserCircle color="red" size="1.4rem" stroke={1.5} />
-                <Text c="red" fz="sm">
+                <IconUserCircle color="#FA5252" size="1.4rem" stroke={1.5} />
+                <Text fz="sm" sx={(theme) => ({ color: theme.colors.red[6] })}>
                   100/100
                 </Text>
               </Flex>
@@ -113,15 +114,6 @@ function MyStrategies() {
                   <span style={{ fontWeight: "bold" }}> 2 days</span>
                 </Text>
               </Flex>
-              <Button
-                radius="xl"
-                mt={10}
-                variant="light"
-                color="violet"
-                size="sm"
-              >
-                copy
-              </Button>
             </Flex>
           </Paper>
         )}

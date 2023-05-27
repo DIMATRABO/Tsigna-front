@@ -1,6 +1,8 @@
 import {
+  ActionIcon,
   Avatar,
   Button,
+  CopyButton,
   Flex,
   Group,
   NativeSelect,
@@ -9,61 +11,64 @@ import {
   Tabs,
   Text,
   TextInput,
+  Tooltip,
   rem,
 } from "@mantine/core";
-import { IconMoodPin, IconSparkles } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconCoin,
+  IconCoinBitcoin,
+  IconCopy,
+  IconMoodPin,
+  IconSparkles,
+} from "@tabler/icons-react";
 import MyStrategies from "./MyStrategies";
 import { useStyles } from "components/shared/styles";
 import { modals, openModal } from "@mantine/modals";
 import { forwardRef } from "react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Props = {};
+const data = [
+  {
+    image: "/binance.jpg",
+    label: "Binance",
+    value: "Binance",
+    description: "The largest cryptocurrency exchange",
+  },
+
+  {
+    image: "bybit.png",
+    label: "Bybit",
+    value: "Bybit",
+    description: "The safest, fastest, most transparent, and user friendly",
+  },
+  {
+    image: "kucoin.png",
+    label: "Kucoin",
+    value: "Kucoin",
+    description: "The most advanced cryptocurrency exchange",
+  },
+];
+const dataPair = [
+  { value: "btc", label: "Btc/Usd" },
+  { value: "usd", label: "Usd/Btc" },
+];
+const amountPair = [
+  { value: "percent", label: "%" },
+  { value: "usd", label: "Usd" },
+];
+
+interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
+  image: string;
+  label: string;
+  description: string;
+}
 
 const Strategies = ({}: Props) => {
+  const [checked, setChecked] = useState(true);
   const { classes } = useStyles();
-  const data = [
-    {
-      image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
-      label: "Bender Bending Rodríguez",
-      value: "Bender Bending Rodríguez",
-      description: "Fascinated with cooking",
-    },
-
-    {
-      image: "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
-      label: "Carol Miller",
-      value: "Carol Miller",
-      description: "One of the richest people on Earth",
-    },
-    {
-      image: "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
-      label: "Homer Simpson",
-      value: "Homer Simpson",
-      description: "Overweight, lazy, and often ignorant",
-    },
-    {
-      image:
-        "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
-      label: "Spongebob Squarepants",
-      value: "Spongebob Squarepants",
-      description: "Not just a sponge",
-    },
-  ];
-
-  const dataPair = [
-    { value: "btc", label: "Btc/Usd" },
-    { value: "usd", label: "Usd/Btc" },
-  ];
-  const amountPair = [
-    { value: "btc", label: "Btc" },
-    { value: "usd", label: "Usd" },
-  ];
-
-  interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-    image: string;
-    label: string;
-    description: string;
-  }
 
   const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     ({ image, label, description, ...others }: ItemProps, ref) => (
@@ -82,18 +87,6 @@ const Strategies = ({}: Props) => {
     )
   );
 
-  const select = (
-    <NativeSelect
-      data={dataPair}
-      styles={{
-        input: {
-          fontWeight: 500,
-          width: rem(100),
-        },
-      }}
-    />
-  );
-
   const entrySelect = (
     <NativeSelect
       data={amountPair}
@@ -106,12 +99,12 @@ const Strategies = ({}: Props) => {
     />
   );
 
-  const addStrategy = () => {
+  const addStrategy = () =>
     modals.openConfirmModal({
       title: "Please confirm your action",
       size: "xl",
       closeOnConfirm: false,
-      labels: { confirm: "Next modal", cancel: "Close modal" },
+      labels: { confirm: "Next", cancel: "Close" },
       children: (
         <form
           style={{
@@ -121,7 +114,7 @@ const Strategies = ({}: Props) => {
             width: "100%",
           }}
         >
-          <TextInput placeholder="Your name" label="Full name" withAsterisk />
+          <TextInput placeholder="Strategy name" label="Name" />
           <Select
             label="Exchange"
             placeholder="Pick one"
@@ -137,14 +130,43 @@ const Strategies = ({}: Props) => {
                 .includes(value.toLowerCase().trim())
             }
           />
-          <TextInput
-            type="number"
-            placeholder="1000"
-            label="Transfer amount"
-            rightSection={select}
-            rightSectionWidth={92}
+
+          <Flex direction="row" gap="md">
+            <Select
+              label="From"
+              placeholder="Pick one"
+              searchable
+              nothingFound="No options"
+              data={["Btc", "Usd", "Eth"]}
+              sx={{
+                flex: 1,
+              }}
+            />
+            <Select
+              label="To"
+              placeholder="Pick one"
+              searchable
+              nothingFound="No options"
+              data={["Btc", "Usd", "Eth"]}
+              sx={{
+                flex: 1,
+              }}
+            />
+          </Flex>
+          <Switch
+            label="Futures"
+            labelPosition="left"
+            size="md"
+            onChange={() => setChecked(!checked)}
+            checked={checked}
           />
-          <Switch label="Futures" labelPosition="left" size="md" />
+          <TextInput
+            placeholder="Leverage"
+            label="Leverage"
+            sx={{
+              display: checked ? "block" : "none",
+            }}
+          />
           <TextInput
             type="number"
             placeholder="1000"
@@ -153,24 +175,81 @@ const Strategies = ({}: Props) => {
             rightSectionWidth={92}
           />
           <TextInput type="number" placeholder="1000" label="Initial Capital" />
+          <Text>
+            <Text size="sm" color="gray">
+              2000
+            </Text>
+          </Text>
         </form>
       ),
       onConfirm: () =>
         modals.openConfirmModal({
           title: "This is modal at second layer",
-          labels: { confirm: "Close modal", cancel: "Back" },
+          labels: { confirm: "Close", cancel: "Back" },
           closeOnConfirm: false,
           children: (
-            <Text size="sm">
-              When this modal is closed modals state will revert to first modal
-            </Text>
+            <>
+              <TextInput
+                placeholder="Webhook url"
+                label="webhook url"
+                defaultValue={"https://truesignal.com/strategies/123456788"}
+                rightSection={
+                  <CopyButton value="copied" timeout={2000}>
+                    {({ copied, copy }) => (
+                      <Tooltip
+                        label={copied ? "Copied" : "Copy"}
+                        withArrow
+                        position="right"
+                      >
+                        <ActionIcon
+                          color={copied ? "teal" : "gray"}
+                          onClick={copy}
+                        >
+                          {copied ? (
+                            <IconCheck size="1rem" />
+                          ) : (
+                            <IconCopy size="1rem" />
+                          )}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </CopyButton>
+                }
+              />
+              <TextInput
+                placeholder="Key"
+                label="Key"
+                defaultValue={"Axmklj87jjh12eedERbJ78eA32lkjn5431aez"}
+                rightSection={
+                  <CopyButton value="copied" timeout={2000}>
+                    {({ copied, copy }) => (
+                      <Tooltip
+                        label={copied ? "Copied" : "Copy"}
+                        withArrow
+                        position="right"
+                      >
+                        <ActionIcon
+                          color={copied ? "teal" : "gray"}
+                          onClick={copy}
+                        >
+                          {copied ? (
+                            <IconCheck size="1rem" />
+                          ) : (
+                            <IconCopy size="1rem" />
+                          )}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </CopyButton>
+                }
+              />
+            </>
           ),
           onConfirm: modals.closeAll,
         }),
 
       onCancel: modals.closeAll,
     });
-  };
 
   return (
     <Flex direction="column">
@@ -198,11 +277,11 @@ const Strategies = ({}: Props) => {
         </Tabs.List>
 
         <Tabs.Panel value="myStrategies" pt="xs">
-          <MyStrategies />
+          <MyStrategies stratNumber={4} />
         </Tabs.Panel>
 
         <Tabs.Panel value="popularStrategies" pt="xs">
-          Messages tab content
+          <MyStrategies stratNumber={8} />
         </Tabs.Panel>
       </Tabs>
     </Flex>

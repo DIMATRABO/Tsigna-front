@@ -9,65 +9,104 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { modals } from "@mantine/modals";
-import {
-  IconAt,
-  IconEdit,
-  IconEye,
-  IconSearch,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconSearch, IconTrash } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import React from "react";
+import { useForm, zodResolver } from "@mantine/form";
+import { z } from "zod";
+import AddUserForm from "./AddUserForm";
 
-const records = [
-  {
-    name: "User 1",
-    email: "user1@email.com",
-    subscription: "Subscription 1",
-    action: "Action 1",
-  },
-];
+export const EditUserSchema = z.object({
+  firstName: z.string().nonempty({ message: "First name is required" }),
+  lastName: z.string().nonempty({ message: "Last name is required" }),
+  email: z.string().email({ message: "Invalid email" }),
+  subscription: z.string().nonempty({ message: "Subscription is required" }),
+  birthDate: z.string().nonempty({ message: "Birth date is required" }),
+});
+
+export type EditUserValues = z.infer<typeof EditUserSchema>;
 
 function Admin() {
+  const formEdit = useForm<EditUserValues>({
+    validate: zodResolver(EditUserSchema),
+  });
+
+  const OnEdit = (values: EditUserValues) => {
+    console.log(values);
+  };
+
+  const records = [
+    {
+      firstName: "User 1",
+      lastName: "User 1",
+      email: "user1@email.com",
+      subscription: "Subscription 1",
+      action: "Action 1",
+      birthDate: "01/01/2001",
+    },
+  ];
   const editUser = () =>
     modals.open({
       title: "Edit User",
       size: "lg",
 
       children: (
-        <Flex w="100%" direction="column" gap={20}>
-          <TextInput
-            placeholder="Your name"
-            label="Name"
-            size="md"
-            // w="100%"
-            defaultValue={records[0].name}
-          />
-          <TextInput
-            placeholder="Your email"
-            label="Email"
-            // w="100%"
-            defaultValue={records[0].email}
-          />
+        <form onSubmit={formEdit.onSubmit(OnEdit)}>
+          <Flex w="100%" direction="column" gap={20}>
+            <TextInput
+              placeholder="First name"
+              label="First name"
+              size="md"
+              // w="100%"
+              defaultValue={records[0].firstName}
+              {...formEdit.getInputProps("firstName")}
+            />
+            <TextInput
+              placeholder="Last name"
+              size="md"
+              label="Last name"
+              // w="100%"
+              defaultValue={records[0].email}
+              {...formEdit.getInputProps("lastName")}
+            />
+            <TextInput
+              placeholder="Your email"
+              size="md"
+              label="Email"
+              // w="100%"
+              defaultValue={records[0].email}
+              {...formEdit.getInputProps("email")}
+            />
 
-          <Select
-            placeholder="Select your subscription"
-            label="Subscription"
-            // w="100%"
-            defaultValue={records[0].subscription}
-            data={[
-              { value: "Subscription 1", label: "Subscription 1" },
-              { value: "Subscription 2", label: "Subscription 2" },
-              { value: "Subscription 3", label: "Subscription 3" },
-            ]}
-          />
+            <Select
+              placeholder="Select your subscription"
+              size="md"
+              label="Subscription"
+              dropdownPosition="bottom"
+              // w="100%"
+              defaultValue={records[0].subscription}
+              {...formEdit.getInputProps("subscription")}
+              data={[
+                { value: "Subscription 1", label: "Subscription 1" },
+                { value: "Subscription 2", label: "Subscription 2" },
+                { value: "Subscription 3", label: "Subscription 3" },
+              ]}
+            />
 
-          <Button color="violet" variant="light" fullWidth type="submit">
-            Save
-          </Button>
-        </Flex>
+            <Button color="violet" variant="light" fullWidth type="submit">
+              Save
+            </Button>
+          </Flex>
+        </form>
       ),
+    });
+
+  const addUser = () =>
+    modals.open({
+      title: "Add User",
+      size: "lg",
+      children: <AddUserForm />,
     });
 
   const deleteUsers = () =>
@@ -90,6 +129,7 @@ function Admin() {
       sx={(theme) => ({
         width: "100%",
         margin: "auto",
+        gap: 10,
       })}
     >
       <TextInput
@@ -97,6 +137,15 @@ function Admin() {
         icon={<IconSearch size="0.8rem" />}
         py={10}
       />
+      <Button
+        color="violet"
+        onClick={() => addUser()}
+        sx={{
+          alignSelf: "flex-start",
+        }}
+      >
+        Add User
+      </Button>
       <DataTable
         withBorder
         borderRadius="sm"
@@ -105,8 +154,10 @@ function Admin() {
         verticalAlignment="top"
         fontSize={16}
         columns={[
-          { accessor: "name" },
+          { accessor: "firstName" },
+          { accessor: "lastName" },
           { accessor: "email" },
+          { accessor: "birthDate" },
           {
             accessor: "subscription",
             render: () => (

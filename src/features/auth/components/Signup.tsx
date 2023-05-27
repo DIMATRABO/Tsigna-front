@@ -13,6 +13,9 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useStyles } from "components/shared/styles";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "services/auth";
+import { showNotification } from "@mantine/notifications";
 
 type Props = {};
 
@@ -23,54 +26,32 @@ const Signup = ({}: Props) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
+  const { mutate, isLoading } = useMutation(
+    (values: SignupSchemaType) => registerUser(values),
+    {
+      onSuccess: () => {
+        showNotification({
+          title: "Account created!",
+          message: "You can now login to your account.",
+          color: "teal",
+        });
+        navigate("/login");
+      },
+      onError: (error) => {
+        showNotification({
+          title: "Error",
+          message: "Something went wrong. Please try again later",
+          color: "red",
+        });
+      },
+    }
+  );
+
   const onSubmit = (values: SignupSchemaType) => {
-    navigate("/dashboard");
+    mutate(values);
   };
 
   return (
-    // <Container size="xl">
-    //   <form
-    //     onSubmit={form.onSubmit((values) => console.log(values))}
-    //     style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-    //   >
-    //     <TextInput
-    //       {...form.getInputProps("firstName")}
-    //       label="First Name"
-    //       placeholder="Enter your first name"
-    //       size="md"
-    //     />
-    //     <TextInput
-    //       {...form.getInputProps("lastName")}
-    //       label="Last Name"
-    //       placeholder="Enter your last name"
-    //       size="md"
-    //     />
-    //     <DateInput {...form.getInputProps("birthday")} label="Date of Birth" />
-    //     <TextInput
-    //       {...form.getInputProps("email")}
-    //       label="Email"
-    //       placeholder="Enter your email"
-    //       size="md"
-    //     />
-    //     <TextInput
-    //       {...form.getInputProps("password")}
-    //       label="Password"
-    //       placeholder="Enter your password"
-    //       size="md"
-    //       type="password"
-    //     />
-    //     <TextInput
-    //       {...form.getInputProps("confirmPassword")}
-    //       label="Confirm Password"
-    //       placeholder="Enter your password"
-    //       size="md"
-    //       type="password"
-    //     />
-    //     <Button type="submit" fullWidth>
-    //       Signup
-    //     </Button>
-    //   </form>
-    // </Container>
     <Container
       size={720}
       style={{
@@ -138,7 +119,12 @@ const Signup = ({}: Props) => {
             placeholder="Enter your password"
             size="md"
           />
-          <Button type="submit" fullWidth className={classes.button}>
+          <Button
+            type="submit"
+            fullWidth
+            className={classes.button}
+            loading={isLoading}
+          >
             Signup
           </Button>
         </form>

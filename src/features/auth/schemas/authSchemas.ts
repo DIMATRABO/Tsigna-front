@@ -31,6 +31,7 @@ export const loginSchema = object({
   password: string({
     required_error: "Password is required",
   }).min(6, "Password must be at least 6 characters long"),
+  keepLoggedIn: z.boolean().optional(),
 });
 
 export type SignupSchemaType = z.infer<typeof signupSchema>;
