@@ -66,8 +66,8 @@ const WalletCard = ({ wallet }: Props) => {
         >
           <Text weight={700}>Balance :</Text>
           <Text weight={500} color="green">
-            <Badge color="green" variant="light">
-              {wallet.balance} $
+            <Badge color={wallet.balance > 0 ? "green" : "red"} variant="light">
+              {wallet.balance ? `${wallet.balance} $` : "Cannot Access Wallet"}
             </Badge>
           </Text>
         </Group>

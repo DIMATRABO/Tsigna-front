@@ -5,7 +5,7 @@ export const getAllExchanges = async () => {
   return data;
 };
 
-export const getAllCurrencies = async () => {
-  const { data } = await instance.get("/exchanges/quotes/lbank");
+export const getAllCurrencies = async (wallet: string) => {
+  const { data } = await instance.get("/exchanges/quotes/" + wallet);
   return data;
 };

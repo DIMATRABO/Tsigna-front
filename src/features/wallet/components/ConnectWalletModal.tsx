@@ -11,7 +11,7 @@ import {
 import { useStyles } from "components/shared/styles";
 import { WalletForm, walletForm } from "../schemas/wallet";
 import { useForm, zodResolver } from "@mantine/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllCurrencies, getAllExchanges } from "services/exchange";
 import { Exchange } from "types/exchange";
 import { forwardRef } from "react";
@@ -42,6 +42,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
 
 const ConnectWalletModal = ({}: Props) => {
   const { classes } = useStyles();
+  const queryClient = useQueryClient();
 
   const form = useForm<WalletForm>({
     validate: zodResolver(walletForm),
@@ -58,18 +59,20 @@ const ConnectWalletModal = ({}: Props) => {
   );
 
   const { data: currencies, isLoading: loadingCurrencies } = useQuery<string[]>(
-    ["currencies"],
-    getAllCurrencies,
+    ["currencies", form.values.exchange_id],
+    () => getAllCurrencies(form.values.exchange_id),
     {
       refetchOnWindowFocus: false,
       cacheTime: Infinity,
       staleTime: Infinity,
+      enabled: !!form.values.exchange_id,
     }
   );
 
   const { mutate: createWalletMutation, isLoading: loadingCreateWallet } =
     useMutation((values: WalletForm) => createWallet(values), {
       onSuccess: (data) => {
+        queryClient.invalidateQueries(["myWallets"]);
         notifications.show({
           title: "Wallet Created!",
           message: "You have successfully created a wallet.",
@@ -90,7 +93,7 @@ const ConnectWalletModal = ({}: Props) => {
     createWalletMutation(values);
   };
 
-  if (isLoading || loadingCurrencies) {
+  if (isLoading) {
     return <LoadingOverlay visible />;
   }
 
@@ -128,21 +131,23 @@ const ConnectWalletModal = ({}: Props) => {
         }
         {...form.getInputProps("exchange_id")}
       />
-      <Select
-        withAsterisk
-        label="Currency"
-        placeholder="Select Currency"
-        data={
-          (currencies &&
-            currencies.length > 0 &&
-            currencies.map((currency) => ({
-              value: currency,
-              label: currency,
-            }))) ||
-          []
-        }
-        {...form.getInputProps("currency")}
-      />
+      {!loadingCurrencies && (
+        <Select
+          withAsterisk
+          label="Currency"
+          placeholder="Select Currency"
+          data={
+            (currencies &&
+              currencies.length > 0 &&
+              currencies.map((currency) => ({
+                value: currency,
+                label: currency,
+              }))) ||
+            []
+          }
+          {...form.getInputProps("currency")}
+        />
+      )}
       <TextInput
         withAsterisk
         label="API Key"
