@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { wallets } from "./Wallet";
 import { Box, Image, Text } from "@mantine/core";
 import DataTableComponent from "components/shared/DataTableComponent";
 
@@ -7,7 +6,7 @@ function MyWallet() {
   const { id } = useParams();
   return (
     <div>
-      {wallets.map((wallet) => {
+      {/* {wallets.map((wallet) => {
         if (wallet.id === id) {
           return (
             <>
@@ -50,7 +49,7 @@ function MyWallet() {
             </>
           );
         }
-      })}
+      })} */}
     </div>
   );
 }

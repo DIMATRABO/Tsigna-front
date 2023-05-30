@@ -1,47 +1,59 @@
 import {
-  Flex,
-  Paper,
-  Title,
-  Text,
   Button,
   Divider,
-  Badge,
-  Card,
-  Group,
-  Image,
+  Flex,
+  LoadingOverlay,
+  Paper,
   SimpleGrid,
+  Text,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { useQuery } from "@tanstack/react-query";
 import { useStyles } from "components/shared/styles";
-import { Link } from "react-router-dom";
+import { getMyWallets } from "services/wallet";
+import { IWallet } from "types/wallet";
+import ConnectWalletModal from "./ConnectWalletModal";
+import WalletCard from "./WalletCard";
 
 type Props = {};
 
-export const wallets = [
-  {
-    id: "1",
-    name: "My First wallet",
-    balance: 1200,
-    created: "12/12/2021",
-    image: "binance.jpg",
-  },
-  {
-    id: "2",
-    name: "Kucoin wallet",
-    balance: 2300,
-    created: "12/12/2021",
-    image: "kucoin.png",
-  },
-  {
-    id: "3",
-    name: "Last wallet",
-    balance: 1923,
-    created: "12/12/2021",
-    image: "bybit.png",
-  },
-];
+// export const wallets = [
+//   {
+//     id: "1",
+//     name: "My First wallet",
+//     balance: 1200,
+//     created: "12/12/2021",
+//     image: "binance.jpg",
+//   },
+//   {
+//     id: "2",
+//     name: "Kucoin wallet",
+//     balance: 2300,
+//     created: "12/12/2021",
+//     image: "kucoin.png",
+//   },
+//   {
+//     id: "3",
+//     name: "Last wallet",
+//     balance: 1923,
+//     created: "12/12/2021",
+//     image: "bybit.png",
+//   },
+// ];
 
 const Wallet = ({}: Props) => {
   const { classes } = useStyles();
+  const { data, isLoading } = useQuery<IWallet[]>(["myWallets"], getMyWallets);
+
+  const openConnectWalletModal = () =>
+    modals.open({
+      title: "Connect wallet",
+      children: <ConnectWalletModal />,
+      size: "xl",
+    });
+
+  if (isLoading) return <LoadingOverlay visible />;
+
   return (
     <Flex
       direction="column"
@@ -55,27 +67,11 @@ const Wallet = ({}: Props) => {
           <Text c="dimmed" tt="uppercase" fw={700} fz="xs">
             My Wallet
           </Text>
-          <Button className={classes.button}>Connect new wallet</Button>
+          <Button className={classes.button} onClick={openConnectWalletModal}>
+            Connect new wallet
+          </Button>
         </Flex>
         <Divider />
-        {/* <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Card.Section component="a" href="https://mantine.dev/">
-            <Image
-              src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-              height={160}
-              alt="Norway"
-            />
-          </Card.Section>
-
-          <Group position="left" mt="sm" mb="xs">
-            <Text weight={500}>Name :</Text>
-            <Text weight={500}>My first wallet</Text>
-          </Group>
-          <Group position="left" mt="sm" mb="xs">
-            <Text weight={500}>Name :</Text>
-            <Text weight={500}>My first wallet</Text>
-          </Group>
-        </Card> */}
         <SimpleGrid
           py={10}
           cols={3}
@@ -86,87 +82,11 @@ const Wallet = ({}: Props) => {
             { maxWidth: "36rem", cols: 1, spacing: "sm" },
           ]}
         >
-          {wallets.map((wallet) => (
-            <Link
-              to={`/wallet/${wallet.id}`}
-              key={wallet.id}
-              style={{
-                textDecoration: "none",
-              }}
-            >
-              <Card
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                withBorder
-                sx={(theme) => ({
-                  "&:hover": {
-                    transform: "scale(1.02)",
-                    transition: "all 0.3s ease-in-out",
-                    backgroundColor:
-                      theme.colorScheme === "dark" ? theme.colors.dark[5] : "",
-                  },
-                })}
-              >
-                <Card.Section
-                  sx={{
-                    overflow: "hidden",
-                  }}
-                >
-                  <Image src={`${wallet.image}`} height={160} alt="Norway" />
-                </Card.Section>
-
-                <Group
-                  position="left"
-                  mt="sm"
-                  mb="xs"
-                  spacing={20}
-                  sx={(theme) => ({
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.gray[2]
-                        : theme.colors.gray[7],
-                  })}
-                >
-                  <Text weight={700}>Name :</Text>
-                  <Text weight={500}>{wallet.name}</Text>
-                </Group>
-                <Group
-                  position="left"
-                  mt="sm"
-                  mb="xs"
-                  sx={(theme) => ({
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.gray[2]
-                        : theme.colors.gray[7],
-                  })}
-                >
-                  <Text weight={700}>Balance :</Text>
-                  <Text weight={500} color="green">
-                    <Badge color="green" variant="light">
-                      {wallet.balance} $
-                    </Badge>
-                  </Text>
-                </Group>
-                <Group
-                  position="left"
-                  mt="sm"
-                  mb="xs"
-                  sx={(theme) => ({
-                    color: theme.colors.gray[5],
-                  })}
-                >
-                  <Text weight={500} size={12}>
-                    Created :
-                  </Text>
-                  <Text weight={500} size={12}>
-                    {wallet.created}
-                  </Text>
-                </Group>
-              </Card>
-            </Link>
-          ))}
+          {data &&
+            data.length > 0 &&
+            data?.map((wallet) => (
+              <WalletCard wallet={wallet} key={wallet.id} />
+            ))}
         </SimpleGrid>
       </Paper>
     </Flex>

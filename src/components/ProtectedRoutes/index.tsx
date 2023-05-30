@@ -5,16 +5,16 @@ import { ReactNode, useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 function ProtectedRoutes() {
-  const { user, isLoading, isSuccess } = useContext(AuthContext);
+  const { user, isLoading, isSuccess, accessToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, navigate, accessToken]);
 
-  if (!user || isLoading) {
+  if (!user || isLoading || !isSuccess) {
     return <LoadingOverlay visible />;
   }
 

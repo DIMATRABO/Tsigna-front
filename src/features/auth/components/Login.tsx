@@ -44,7 +44,6 @@ const Login = ({}: Props) => {
     (values: LoginSchemaType) => loginUser(values.email, values.password),
     {
       onSuccess: (data) => {
-        console.log("data", data);
         if (form.values.keepLoggedIn) {
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("refresh_token", data.refresh_token);
@@ -59,7 +58,7 @@ const Login = ({}: Props) => {
           message: "You are now logged in.",
           color: "teal",
         });
-        // navigate("/dashboard");
+        window.location.reload();
       },
       onError: (error) => {
         showNotification({
@@ -74,9 +73,6 @@ const Login = ({}: Props) => {
   const onSubmit = (values: LoginSchemaType) => {
     mutate(values);
   };
-
-  console.log("user", user);
-  console.log("loadingUser", loadingUser);
 
   useEffect(() => {
     if (user) {
@@ -141,7 +137,14 @@ const Login = ({}: Props) => {
             {...form.getInputProps("password")}
           />
           <Group position="apart" mt="lg">
-            <Checkbox label="Remember me" />
+            <Checkbox
+              label="Remember me"
+              // checked={form.values.keepLoggedIn}
+              //   onChange={(event) => {
+              //     form.setFieldValue("keepLoggedIn", event.currentTarget.checked);
+              //   }}
+              {...form.getInputProps("keepLoggedIn")}
+            />
             <Anchor component="button" size="sm">
               Forgot password?
             </Anchor>

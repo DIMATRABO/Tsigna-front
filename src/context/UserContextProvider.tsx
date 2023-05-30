@@ -27,6 +27,10 @@ const UserContextProvider = ({ children }: Props) => {
     onError: (error: AxiosError) => {
       setUser(null);
       setAccessToken(null);
+      localStorage.removeItem("access_token");
+      sessionStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      sessionStorage.removeItem("refresh_token");
 
       //   if (error.response?.status === 401) return;
 
