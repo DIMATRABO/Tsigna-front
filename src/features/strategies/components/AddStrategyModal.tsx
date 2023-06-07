@@ -9,7 +9,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useStyles } from "components/shared/styles";
 import { SelectItem } from "features/wallet/components/ConnectWalletModal";
 import { useState } from "react";
@@ -34,13 +34,8 @@ const amountPair = [
 const AddStrategyModal = ({}: Props) => {
   const [checked, setChecked] = useState(false);
   const { classes } = useStyles();
-  // const [symbols, setSymbols] = useState<
-  //   {
-  //     label: string;
-  //     value: string;
-  //   }[]
-  // >();
   const [isPercent, setIsPercent] = useState(true);
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateStrategySchema>({
     validate: zodResolver(createStrategySchema),
@@ -61,19 +56,7 @@ const AddStrategyModal = ({}: Props) => {
           .id as string | ""
       ),
     {
-      onSuccess: (data) => {
-        // const set = new Set<string>();
-        // Object.keys(data).forEach((key) => {
-        //   set.add(key);
-        // });
-        // setSymbols(
-        //   Array.from(set).map((key) => ({
-        //     label: key,
-        //     // @ts-ignore
-        //     value: data[key] as string,
-        //   }))
-        // );
-      },
+      onSuccess: (data) => {},
       refetchOnWindowFocus: false,
       cacheTime: Infinity,
       staleTime: Infinity,
@@ -97,6 +80,7 @@ const AddStrategyModal = ({}: Props) => {
           color: "green",
         });
         modals.closeAll();
+        queryClient.invalidateQueries(["myStrategies"]);
       },
       onError: (error) => {
         console.log("error", error);
@@ -109,21 +93,7 @@ const AddStrategyModal = ({}: Props) => {
     }
   );
 
-  const entrySelect = (
-    <NativeSelect
-      data={amountPair}
-      value={isPercent ? "percent" : "usd"}
-      onChange={(event) => {
-        setIsPercent(event.currentTarget.value === "percent");
-      }}
-      styles={{
-        input: {
-          fontWeight: 500,
-          width: rem(100),
-        },
-      }}
-    />
-  );
+  const symbolData = symbols && Object.keys(symbols);
 
   const onSubmit = (values: CreateStrategySchema) => {
     mutateStrategy({
@@ -163,7 +133,7 @@ const AddStrategyModal = ({}: Props) => {
       />
       <Select
         withAsterisk
-        label="Exchange"
+        label="Wallets"
         itemComponent={SelectItem}
         placeholder="Select Exchange"
         dropdownPosition="bottom"
@@ -194,12 +164,19 @@ const AddStrategyModal = ({}: Props) => {
           placeholder="Pick one"
           searchable
           nothingFound="No Symbols"
-          data={Object.keys(symbols).map((key) => ({
-            label: key,
+          //@ts-ignore
+          data={symbolData}
+          onChange={(value) => {
             // @ts-ignore
-            value: symbols[key] as string,
-          }))}
-          {...form.getInputProps("symbol")}
+            form.setFieldValue("symbol", symbols[value as string]);
+          }}
+
+          // data={Object.keys(symbols).map((key) => ({
+          //   label: key,
+          //   // @ts-ignore
+          //   value: symbols[key] as string,
+          // }))}
+          // {...form.getInputProps("symbol")}
         />
       )}
       <Switch
@@ -226,7 +203,27 @@ const AddStrategyModal = ({}: Props) => {
         withAsterisk
         placeholder="1000"
         label="Entry Amount"
-        rightSection={entrySelect}
+        rightSection={
+          form.values.symbol &&
+          symbols && (
+            <NativeSelect
+              data={[
+                { label: "%", value: "percent" },
+                { label: form.values.symbol, value: form.values.symbol },
+              ]}
+              value={isPercent ? "percent" : form.values.symbol}
+              onChange={(event) => {
+                setIsPercent(event.currentTarget.value === "percent");
+              }}
+              styles={{
+                input: {
+                  fontWeight: 500,
+                  width: rem(100),
+                },
+              }}
+            />
+          )
+        }
         rightSectionWidth={92}
         {...form.getInputProps("entry_size")}
       />

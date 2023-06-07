@@ -10,6 +10,7 @@ import {
   Flex,
   Badge,
   Box,
+  LoadingOverlay,
 } from "@mantine/core";
 import { IconUserPlus } from "@tabler/icons-react";
 import {
@@ -26,6 +27,8 @@ import { DataTable } from "mantine-datatable";
 import "./test.css";
 import { theme } from "config/mantine";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getHomeData } from "services/dashboard";
 
 type Props = {};
 
@@ -153,6 +156,13 @@ const options = {
 
 const Dashboard = ({}: Props) => {
   const { classes } = useStyles();
+
+  const { data: homeData, isLoading } = useQuery(["homeData"], getHomeData);
+
+  console.log("homeData", homeData);
+
+  if (isLoading) return <LoadingOverlay visible />;
+
   return (
     <Flex direction="column">
       <Title

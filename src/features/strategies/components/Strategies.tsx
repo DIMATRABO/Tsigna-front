@@ -1,10 +1,12 @@
-import { Button, Flex, Tabs } from "@mantine/core";
+import { Button, Flex, LoadingOverlay, Tabs } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconMoodPin, IconSparkles } from "@tabler/icons-react";
 import { useStyles } from "components/shared/styles";
 import AddStrategyModal from "./AddStrategyModal";
 import ApiKeyModal from "./ApiKeyModal";
 import MyStrategies from "./MyStrategies";
+import { getStrategies } from "services/strategy";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {};
 
@@ -63,11 +65,11 @@ const Strategies = ({}: Props) => {
         </Tabs.List>
 
         <Tabs.Panel value="myStrategies" pt="xs">
-          <MyStrategies stratNumber={4} />
+          <MyStrategies />
         </Tabs.Panel>
 
         <Tabs.Panel value="popularStrategies" pt="xs">
-          <MyStrategies stratNumber={8} />
+          <MyStrategies isPopular />
         </Tabs.Panel>
       </Tabs>
     </Flex>

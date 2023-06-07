@@ -5,3 +5,8 @@ export const createStrategy = async (strategy: StrategySchema) => {
   const { data } = await instance.post("/strategies/", strategy);
   return data;
 };
+
+export const getStrategies = async () => {
+  const { data } = await instance.get("/strategies/me");
+  return data;
+};
