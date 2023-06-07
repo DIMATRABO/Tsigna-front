@@ -6,6 +6,7 @@ import {
   IconWallet,
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { getMyWallets } from "services/wallet";
 import { Strategy } from "types/strategy";
 import { IWallet } from "types/wallet";
@@ -50,25 +51,26 @@ const StrategyCard = ({ strategy }: Props) => {
         <Flex gap={5}>
           <IconWallet size="1.4rem" stroke={1.5} />
           <Text c="dimmed" fz="sm">
-            {wallets?.find((w) => w.id === strategy.account_id)?.name}
+            {/* {wallets?.find((w) => w.id === strategy.)?.name} */}
+            {strategy.account_name}
           </Text>
         </Flex>
       </Flex>
       <Flex mt="sm" gap={20} align="center">
         <Flex direction={"column"}>
           <Text c="green" fz="xl" weight={500}>
-            750.00%
+            {strategy.income_7_days}
           </Text>
           <Text c="dimmed" fz="sm">
-            7D Roi
+            7D Income
           </Text>
         </Flex>
         <Flex direction={"column"}>
           <Text c="green" fz="xl" weight={500}>
-            21,000.00
+            {strategy.invested_7_days}
           </Text>
           <Text c="dimmed" fz="sm">
-            7D PNL
+            7D Invested
           </Text>
         </Flex>
       </Flex>
@@ -79,10 +81,10 @@ const StrategyCard = ({ strategy }: Props) => {
             weight={500}
             sx={(theme) => ({ color: theme.colors.dark[4] })}
           >
-            750.00%
+            {strategy.income_7_days_percent}%
           </Text>
           <Text c="dimmed" fz="sm">
-            7D Roi
+            7D Income
           </Text>
         </Flex>
         <Flex direction={"column"}>
@@ -91,10 +93,10 @@ const StrategyCard = ({ strategy }: Props) => {
             weight={500}
             sx={(theme) => ({ color: theme.colors.dark[4] })}
           >
-            00%
+            {strategy.invested_7_days_percent}%
           </Text>
           <Text c="dimmed" fz="sm">
-            7D PNL
+            7D Invested
           </Text>
         </Flex>
       </Flex>
@@ -106,7 +108,14 @@ const StrategyCard = ({ strategy }: Props) => {
           </Text>
           <Text c="dimmed" fz="sm">
             Runtime:
-            <span style={{ fontWeight: "bold" }}> 2 days</span>
+            <span style={{ fontWeight: "bold" }}>
+              {
+                // display how many days ago the strategy was created
+                " " +
+                  dayjs().diff(dayjs(strategy.creation_date), "day") +
+                  " days"
+              }
+            </span>
           </Text>
         </Flex>
       </Flex>

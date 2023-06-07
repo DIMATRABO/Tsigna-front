@@ -12,7 +12,7 @@ const ApiKeyModal = ({ webhookUrl, key }: Props) => {
       <TextInput
         placeholder="Webhook url"
         label="webhook url"
-        defaultValue={"https://truesignal.com/strategies/123456788"}
+        defaultValue={webhookUrl}
         disabled
         rightSection={
           <CopyButton value="copied" timeout={2000}>
@@ -37,7 +37,7 @@ const ApiKeyModal = ({ webhookUrl, key }: Props) => {
       <TextInput
         placeholder="Key"
         label="Key"
-        defaultValue={"Axmklj87jjh12eedERbJ78eA32lkjn5431aez"}
+        defaultValue={key}
         rightSection={
           <CopyButton value="copied" timeout={2000}>
             {({ copied, copy }) => (

@@ -21,9 +21,10 @@ import {
   createStrategySchema,
 } from "../schemas/strategy";
 import { createStrategy } from "services/strategy";
-import { StrategySchema } from "types/strategy";
+import { Strategy, StrategySchema } from "types/strategy";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
+import ApiKeyModal from "./ApiKeyModal";
 
 type Props = {};
 
@@ -67,20 +68,19 @@ const AddStrategyModal = ({}: Props) => {
     }
   );
 
-  console.log("form", form.errors);
-
   const { mutate: mutateStrategy, isLoading: loadingCreation } = useMutation(
     (values: StrategySchema) => createStrategy(values),
     {
-      onSuccess: (data) => {
+      onSuccess: (data: Strategy) => {
         console.log("data", data);
         notifications.show({
           title: "Strategy Created",
           message: "Strategy created successfully",
           color: "green",
         });
-        modals.closeAll();
+        // modals.closeAll();
         queryClient.invalidateQueries(["myStrategies"]);
+        openApiKeysModal(data.webhook_id, data.webhook_key);
       },
       onError: (error) => {
         console.log("error", error);
@@ -92,6 +92,15 @@ const AddStrategyModal = ({}: Props) => {
       },
     }
   );
+
+  const openApiKeysModal = (webhookUrl: string, key: string) =>
+    modals.openConfirmModal({
+      title: "This is modal at second layer",
+      labels: { confirm: "Close", cancel: "Back" },
+      closeOnConfirm: false,
+      children: <ApiKeyModal webhookUrl={webhookUrl} key={key} />,
+      onConfirm: modals.closeAll,
+    });
 
   const symbolData = symbols && Object.keys(symbols);
 
@@ -234,11 +243,6 @@ const AddStrategyModal = ({}: Props) => {
         label="Initial Capital"
         {...form.getInputProps("capital")}
       />
-      <Text>
-        <Text size="sm" color="gray">
-          2000
-        </Text>
-      </Text>
       <Button
         className={classes.button}
         type="submit"

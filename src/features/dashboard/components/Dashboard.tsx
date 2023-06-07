@@ -21,14 +21,18 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar, Line, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import { DataTable } from "mantine-datatable";
 import "./test.css";
 import { theme } from "config/mantine";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getHomeData } from "services/dashboard";
+import DashboardCard from "./DashboardCard";
+import { HomeData } from "types/dashboard";
+import { getMyOrders } from "services/orders";
+import { Order } from "types/order";
 
 type Props = {};
 
@@ -125,23 +129,48 @@ ChartJS.register(
   Legend
 );
 
-const chartData = {
+const chartDataInit = {
   labels: ["January", "February", "March", "April", "May"],
   datasets: [
     {
       label: "Revenue",
-      data: [50, 70, 40, 60, 80],
-      backgroundColor: "rgba(153, 102, 255, 0.5)", // Violet color
+      data: [-50, 70, -40, 60, 80],
+      backgroundColor: [-50, 70, -40, 60, 80].map((n) => {
+        if (n < 0) return "rgba(255, 99, 132, 0.5)";
+        else return "rgba(54, 162, 235, 0.5)";
+      }), // Violet color
       borderColor: "rgba(153, 102, 255, 0.5)",
     },
   ],
 };
 
 const options = {
+  plugins: {
+    legend: {
+      labels: {
+        boxWidth: 0,
+      },
+    },
+  },
   scales: {
     y: {
-      beginAtZero: true,
-      max: 100,
+      // beginAtZero: true,
+      grid: {
+        color: "#80808040",
+      },
+    },
+    x: {
+      grid: {
+        color: "#80808040",
+      },
+    },
+  },
+};
+
+const pieOptions = {
+  scales: {
+    y: {
+      // beginAtZero: true,
       grid: {
         color: "#80808040",
       },
@@ -156,10 +185,56 @@ const options = {
 
 const Dashboard = ({}: Props) => {
   const { classes } = useStyles();
+  const [chartData, setChartData] = useState(chartDataInit);
+  const [pieData, setPieData] = useState(chartDataInit);
 
-  const { data: homeData, isLoading } = useQuery(["homeData"], getHomeData);
+  const { data: homeData, isLoading } = useQuery<HomeData>(
+    ["homeData"],
+    getHomeData,
+    {
+      onSuccess(data) {
+        setChartData({
+          labels: Object.keys(data?.monthly_profit ?? {}),
+          datasets: [
+            {
+              label: "Profit",
+              data: Object.values(data?.monthly_profit ?? {}),
+              backgroundColor:
+                //change color if negative
+                Object.values(data?.monthly_profit ?? {}).map((n) => {
+                  if (n < 0) return "rgba(255, 99, 132, 0.5)";
+                  else return "rgba(54, 162, 235, 0.5)";
+                }),
 
+              borderColor: "rgba(153, 102, 255, 0.5)",
+            },
+          ],
+        });
+        setPieData({
+          labels: data.orders_by_strategy.map((item) => item[0] as string),
+          datasets: [
+            {
+              label: "Profit",
+              data: data.orders_by_strategy.map((item) => item[1] as number),
+              backgroundColor: [
+                //if negative then red else green
+                "rgba(255, 99, 132, 0.5)",
+                "rgba(54, 162, 235, 0.5)",
+              ], // Violet color
+              borderColor: "rgba(153, 102, 255, 0.5)",
+            },
+          ],
+        });
+      },
+    }
+  );
+
+  const { data: myOrders, isFetching } = useQuery<Order[]>(
+    ["myOrders"],
+    getMyOrders
+  );
   console.log("homeData", homeData);
+  console.log("myOrders", myOrders);
 
   if (isLoading) return <LoadingOverlay visible />;
 
@@ -184,7 +259,23 @@ const Dashboard = ({}: Props) => {
             { maxWidth: "xs", cols: 1 },
           ]}
         >
-          {data.map((item) => (
+          <DashboardCard
+            title="Total Orders"
+            number={homeData?.total_orders ?? 0}
+          />
+          <DashboardCard
+            title="Total Buy Orders"
+            number={homeData?.total_buy_orders ?? 0}
+          />
+          <DashboardCard
+            title="Total Sell Orders"
+            number={homeData?.total_sell_orders ?? 0}
+          />
+          <DashboardCard
+            title="Total Failed Orders"
+            number={homeData?.total_failed_orders ?? 0}
+          />
+          {/* {data.map((item) => (
             <Paper withBorder p="md" radius="md" key={item.title}>
               <Group position="apart">
                 <div>
@@ -227,7 +318,7 @@ const Dashboard = ({}: Props) => {
                 {item.diff > 0 ? "increase" : "decrease"} compared to last month
               </Text>
             </Paper>
-          ))}
+          ))} */}
         </SimpleGrid>
         <Flex
           direction="column"
@@ -264,7 +355,7 @@ const Dashboard = ({}: Props) => {
               },
             })}
           >
-            <Line data={chartData} options={options} />
+            <Pie data={pieData} options={pieOptions} />
           </Paper>
         </Flex>
         <Paper
@@ -281,31 +372,50 @@ const Dashboard = ({}: Props) => {
             Recent Trades
           </Text>
           <DataTable
+            fetching={isFetching}
             withBorder
             striped
             columns={[
               {
-                accessor: "date",
-              },
-              {
-                accessor: "tradingPair",
-              },
-              {
-                accessor: "direction",
+                accessor: "execution_date",
+                title: "Execution Date",
                 render: (value) => (
-                  <Badge color={value.direction === "Buy" ? "green" : "red"}>
-                    {value.direction}
+                  <Text c="dimmed" fz="sm">
+                    {new Date(value.execution_date).toLocaleString()}
+                  </Text>
+                ),
+              },
+              {
+                accessor: "symbol",
+                title: "Symbol",
+              },
+              {
+                accessor: "is_buy",
+                render: (value) => (
+                  <Badge color={value.is_buy ? "green" : "red"}>
+                    {value.is_buy ? "Buy" : "Sell"}
                   </Badge>
                 ),
               },
               {
                 accessor: "amount",
+                title: "Amount",
               },
               {
-                accessor: "entryPrice",
+                accessor: "execution_price",
+                title: "Execution Price",
+              },
+              {
+                accessor: "status",
+                title: "Status",
+                render: (value) => (
+                  <Badge color={value.status === "closed" ? "red" : "green"}>
+                    {value.status}
+                  </Badge>
+                ),
               },
             ]}
-            records={dataTable}
+            records={myOrders}
           />
         </Paper>
       </Box>

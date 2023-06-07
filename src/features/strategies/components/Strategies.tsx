@@ -13,20 +13,6 @@ type Props = {};
 const Strategies = ({}: Props) => {
   const { classes } = useStyles();
 
-  const openApiKeysModal = () =>
-    modals.openConfirmModal({
-      title: "This is modal at second layer",
-      labels: { confirm: "Close", cancel: "Back" },
-      closeOnConfirm: false,
-      children: (
-        <ApiKeyModal
-          webhookUrl="https://truesignal.com/strategies/123456788"
-          key={"fsdfsdf"}
-        />
-      ),
-      onConfirm: modals.closeAll,
-    });
-
   const addStrategy = () =>
     modals.open({
       title: "Please confirm your action",
@@ -56,21 +42,21 @@ const Strategies = ({}: Props) => {
           <Tabs.Tab value="myStrategies" icon={<IconMoodPin size="0.8rem" />}>
             My strategies
           </Tabs.Tab>
-          <Tabs.Tab
+          {/* <Tabs.Tab
             value="popularStrategies"
             icon={<IconSparkles size="0.8rem" />}
           >
             Popular strategies
-          </Tabs.Tab>
+          </Tabs.Tab> */}
         </Tabs.List>
 
         <Tabs.Panel value="myStrategies" pt="xs">
           <MyStrategies />
         </Tabs.Panel>
 
-        <Tabs.Panel value="popularStrategies" pt="xs">
+        {/* <Tabs.Panel value="popularStrategies" pt="xs">
           <MyStrategies isPopular />
-        </Tabs.Panel>
+        </Tabs.Panel> */}
       </Tabs>
     </Flex>
   );

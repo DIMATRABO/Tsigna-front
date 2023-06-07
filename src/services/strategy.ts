@@ -10,3 +10,8 @@ export const getStrategies = async () => {
   const { data } = await instance.get("/strategies/me");
   return data;
 };
+
+export const getPopularStrategies = async () => {
+  const { data } = await instance.get("/strategies/advanced/me");
+  return data;
+};

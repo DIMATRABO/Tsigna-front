@@ -13,7 +13,7 @@ import { IconUserCircle, IconStar, IconCoin } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useStyles } from "components/shared/styles";
 import { useState } from "react";
-import { getStrategies } from "services/strategy";
+import { getPopularStrategies, getStrategies } from "services/strategy";
 import StrategyCard from "./StrategyCard";
 import { Strategy } from "types/strategy";
 import PopularStrategyCard from "./PopularStrategyCard";
@@ -27,7 +27,7 @@ function Strategies({ isPopular }: Props) {
 
   const { data: myStrategies, isLoading } = useQuery<Strategy[]>(
     ["myStrategies"],
-    getStrategies
+    getPopularStrategies
   );
 
   console.log("myStrategies", myStrategies);
@@ -49,10 +49,10 @@ function Strategies({ isPopular }: Props) {
           myStrategies &&
           myStrategies.map((s) => <StrategyCard key={s.id} strategy={s} />)}
 
-        {isPopular &&
+        {/* {isPopular &&
           Array.from({ length: 8 }).map((_, i) => (
             <PopularStrategyCard key={i} />
-          ))}
+          ))} */}
       </SimpleGrid>
     </>
   );
