@@ -3,19 +3,19 @@ import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 type Props = {
   webhookUrl: string;
-  key: string;
+  webhookKey: string;
 };
 
-const ApiKeyModal = ({ webhookUrl, key }: Props) => {
+const ApiKeyModal = ({ webhookUrl, webhookKey }: Props) => {
+  console.log("webhookurl", webhookUrl);
+  console.log("key", webhookKey);
   return (
     <>
       <TextInput
-        placeholder="Webhook url"
         label="webhook url"
-        defaultValue={webhookUrl}
-        disabled
+        value={webhookUrl}
         rightSection={
-          <CopyButton value="copied" timeout={2000}>
+          <CopyButton value={webhookUrl} timeout={2000}>
             {({ copied, copy }) => (
               <Tooltip
                 label={copied ? "Copied" : "Copy"}
@@ -35,11 +35,10 @@ const ApiKeyModal = ({ webhookUrl, key }: Props) => {
         }
       />
       <TextInput
-        placeholder="Key"
         label="Key"
-        defaultValue={key}
+        value={webhookKey}
         rightSection={
-          <CopyButton value="copied" timeout={2000}>
+          <CopyButton value={webhookKey} timeout={2000}>
             {({ copied, copy }) => (
               <Tooltip
                 label={copied ? "Copied" : "Copy"}

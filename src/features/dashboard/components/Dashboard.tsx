@@ -33,6 +33,7 @@ import DashboardCard from "./DashboardCard";
 import { HomeData } from "types/dashboard";
 import { getMyOrders } from "services/orders";
 import { Order } from "types/order";
+import dayjs from "dayjs";
 
 type Props = {};
 
@@ -194,7 +195,12 @@ const Dashboard = ({}: Props) => {
     {
       onSuccess(data) {
         setChartData({
-          labels: Object.keys(data?.monthly_profit ?? {}),
+          labels: Object.keys(data?.monthly_profit ?? {}).map((item) =>
+            dayjs()
+              //@ts-ignore
+              .month(item as number)
+              .format("MMM")
+          ),
           datasets: [
             {
               label: "Profit",
@@ -216,11 +222,12 @@ const Dashboard = ({}: Props) => {
             {
               label: "Profit",
               data: data.orders_by_strategy.map((item) => item[1] as number),
-              backgroundColor: [
-                //if negative then red else green
-                "rgba(255, 99, 132, 0.5)",
-                "rgba(54, 162, 235, 0.5)",
-              ], // Violet color
+              //@ts-ignore
+              backgroundColor: Object.values(data?.monthly_profit ?? {}).map(
+                (n) => {
+                  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
+                }
+              ),
               borderColor: "rgba(153, 102, 255, 0.5)",
             },
           ],
@@ -321,6 +328,7 @@ const Dashboard = ({}: Props) => {
           ))} */}
         </SimpleGrid>
         <Flex
+          w="100%"
           direction="column"
           justify="between"
           align="center"
@@ -336,6 +344,9 @@ const Dashboard = ({}: Props) => {
           <Paper
             sx={(theme) => ({
               flex: 1,
+              height: "400px",
+
+              maxWidth: "600px",
               borderRadius: "10px",
               padding: "5px",
               "@media (min-width: 1080px)": {
@@ -349,6 +360,9 @@ const Dashboard = ({}: Props) => {
             sx={(theme) => ({
               flex: 1,
               borderRadius: "10px",
+              height: "400px",
+
+              maxWidth: "400px",
               padding: "5px",
               "@media (min-width: 1080px)": {
                 padding: "20px",

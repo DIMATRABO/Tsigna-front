@@ -78,7 +78,7 @@ const AddStrategyModal = ({}: Props) => {
           message: "Strategy created successfully",
           color: "green",
         });
-        // modals.closeAll();
+        modals.closeAll();
         queryClient.invalidateQueries(["myStrategies"]);
         openApiKeysModal(data.webhook_id, data.webhook_key);
       },
@@ -93,12 +93,12 @@ const AddStrategyModal = ({}: Props) => {
     }
   );
 
-  const openApiKeysModal = (webhookUrl: string, key: string) =>
+  const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
     modals.openConfirmModal({
       title: "This is modal at second layer",
       labels: { confirm: "Close", cancel: "Back" },
       closeOnConfirm: false,
-      children: <ApiKeyModal webhookUrl={webhookUrl} key={key} />,
+      children: <ApiKeyModal webhookUrl={webhookUrl} webhookKey={webhookKey} />,
       onConfirm: modals.closeAll,
     });
 

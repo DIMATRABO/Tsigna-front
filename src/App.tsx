@@ -20,6 +20,7 @@ import Wallet from "features/wallet/components/Wallet";
 
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import Strategy from "features/strategies/components/Strategy";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
@@ -49,6 +50,7 @@ function App() {
               <Route path="/wallet/:id" element={<MyWallet />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/strategies" element={<Strategies />} />
+              <Route path="/strategies/:id" element={<Strategy />} />
               <Route path="/profile" element={<Profile />} />
             </Route>
             <Route path="*" element={<Login />} />

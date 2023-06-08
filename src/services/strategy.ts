@@ -15,3 +15,8 @@ export const getPopularStrategies = async () => {
   const { data } = await instance.get("/strategies/advanced/me");
   return data;
 };
+
+export const getStrategy = async (id: string) => {
+  const { data } = await instance.get("/strategies/me/" + id);
+  return data;
+};

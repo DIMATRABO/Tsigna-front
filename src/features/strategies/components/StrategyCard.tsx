@@ -1,21 +1,41 @@
-import { Paper, rem, Group, Flex, Text, LoadingOverlay } from "@mantine/core";
+import {
+  Paper,
+  rem,
+  Group,
+  Flex,
+  Text,
+  LoadingOverlay,
+  Menu,
+} from "@mantine/core";
+import { modals } from "@mantine/modals";
 import {
   IconStar,
   IconCoin,
   IconUserCircle,
   IconWallet,
+  IconDotsVertical,
+  IconArrowsLeftRight,
+  IconMessageCircle,
+  IconPhoto,
+  IconSearch,
+  IconSettings,
+  IconTrash,
+  IconEye,
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 import { getMyWallets } from "services/wallet";
 import { Strategy } from "types/strategy";
 import { IWallet } from "types/wallet";
+import ApiKeyModal from "./ApiKeyModal";
 
 type Props = {
   strategy: Strategy;
 };
 
 const StrategyCard = ({ strategy }: Props) => {
+  const navigate = useNavigate();
   const { data: wallets, isLoading } = useQuery<IWallet[]>(
     ["myWallets"],
     getMyWallets,
@@ -24,6 +44,15 @@ const StrategyCard = ({ strategy }: Props) => {
       cacheTime: Infinity,
     }
   );
+
+  const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
+    modals.openConfirmModal({
+      title: "This is modal at second layer",
+      labels: { confirm: "Close", cancel: "Back" },
+      closeOnConfirm: false,
+      children: <ApiKeyModal webhookUrl={webhookUrl} webhookKey={webhookKey} />,
+      onConfirm: modals.closeAll,
+    });
 
   if (isLoading) return <LoadingOverlay visible />;
 
@@ -35,13 +64,47 @@ const StrategyCard = ({ strategy }: Props) => {
       shadow="sm"
       sx={(theme) => ({
         minWidth: rem(300),
+        cursor: "pointer",
       })}
+      // onClick={() => navigate(`/strategies/${strategy.id}`)}
     >
-      {/* <Group position="apart" noWrap>
-        <Text weight={500} size="lg"></Text>
-        <IconStar size="1.2rem" />
-      </Group> */}
-      <Flex align="center" mt="sm" gap={10}>
+      <Group position="apart" noWrap>
+        <Text weight={500} size="lg">
+          {strategy.name}
+        </Text>
+
+        <Menu shadow="md" width={200}>
+          <Menu.Target>
+            <IconDotsVertical
+              size="1.2rem"
+              // style={{
+              //   cursor: "pointer",
+              // }}
+            />
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Label>Webhook Details : </Menu.Label>
+            <Menu.Item
+              icon={<IconEye size={14} />}
+              onClick={() =>
+                openApiKeysModal(strategy.webhook_id, strategy.webhook_key)
+              }
+            >
+              View Details
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </Group>
+      <Flex
+        align="center"
+        mt="sm"
+        gap={10}
+        sx={{
+          cursor: "pointer",
+        }}
+        onClick={() => navigate(`/strategies/${strategy.id}`)}
+      >
         <Flex gap={5}>
           <IconCoin size="1.4rem" stroke={1.5} />
           <Text c="dimmed" fz="sm">
