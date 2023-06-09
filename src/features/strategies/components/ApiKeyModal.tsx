@@ -1,4 +1,12 @@
-import { TextInput, CopyButton, ActionIcon, Tooltip } from "@mantine/core";
+import {
+  TextInput,
+  CopyButton,
+  ActionIcon,
+  Tooltip,
+  Button,
+  Flex,
+} from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 type Props = {
@@ -7,10 +15,8 @@ type Props = {
 };
 
 const ApiKeyModal = ({ webhookUrl, webhookKey }: Props) => {
-  console.log("webhookurl", webhookUrl);
-  console.log("key", webhookKey);
   return (
-    <>
+    <Flex direction={"column"} gap="md">
       <TextInput
         label="webhook url"
         value={webhookUrl}
@@ -57,7 +63,8 @@ const ApiKeyModal = ({ webhookUrl, webhookKey }: Props) => {
           </CopyButton>
         }
       />
-    </>
+      <Button onClick={() => modals.closeAll()}>Close</Button>
+    </Flex>
   );
 };
 

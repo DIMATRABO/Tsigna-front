@@ -30,6 +30,8 @@ import { getMyOrdersByWebhook } from "services/orders";
 import { DataTable } from "mantine-datatable";
 import { Order } from "types/order";
 import dayjs from "dayjs";
+import { getStatusColor, hexColors } from "utils/colors";
+import { chartDataInit, options, pieOptions } from "utils/charts";
 
 type Props = {};
 
@@ -72,60 +74,6 @@ ChartJS.register(
   Legend
 );
 
-const chartDataInit = {
-  labels: ["January", "February", "March", "April", "May"],
-  datasets: [
-    {
-      label: "Revenue",
-      data: [-50, 70, -40, 60, 80],
-      backgroundColor: [-50, 70, -40, 60, 80].map((n) => {
-        if (n < 0) return "rgba(255, 99, 132, 0.5)";
-        else return "rgba(54, 162, 235, 0.5)";
-      }), // Violet color
-      borderColor: "rgba(153, 102, 255, 0.5)",
-    },
-  ],
-};
-
-const options = {
-  plugins: {
-    legend: {
-      labels: {
-        boxWidth: 0,
-      },
-    },
-  },
-  scales: {
-    y: {
-      // beginAtZero: true,
-      grid: {
-        color: "#80808040",
-      },
-    },
-    x: {
-      grid: {
-        color: "#80808040",
-      },
-    },
-  },
-};
-
-const pieOptions = {
-  scales: {
-    y: {
-      // beginAtZero: true,
-      grid: {
-        color: "#80808040",
-      },
-    },
-    x: {
-      grid: {
-        color: "#80808040",
-      },
-    },
-  },
-};
-
 function Strategy({}: Props) {
   const { classes } = useStyles();
   const [chartData, setChartData] = useState(chartDataInit);
@@ -133,9 +81,17 @@ function Strategy({}: Props) {
   const id = useParams<{ id: string }>().id;
   const navigate = useNavigate();
 
+  const { data: myStrategies, isLoading: loadingStrategies } = useQuery<
+    IStrategy[]
+  >(["myStrategies"], getPopularStrategies);
+
+  const actualStrategy = myStrategies?.find((s) => s.id === id);
+
+  console.log("actualStrategy", actualStrategy);
+
   const { data, isLoading } = useQuery<StrategyDashboardData>(
-    ["strategy", id],
-    () => getStrategyDashboard(id!),
+    ["strategy", actualStrategy?.webhook_id],
+    () => getStrategyDashboard(actualStrategy?.webhook_id!),
     {
       onSuccess(data) {
         setChartData({
@@ -169,11 +125,7 @@ function Strategy({}: Props) {
                 (item) => item[1] as number
               ),
               //@ts-ignore
-              backgroundColor: Object.values(data?.monthly_profit ?? {}).map(
-                (n) => {
-                  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
-                }
-              ),
+              backgroundColor: hexColors,
               borderColor: "rgba(153, 102, 255, 0.5)",
             },
           ],
@@ -182,15 +134,9 @@ function Strategy({}: Props) {
       onError: (error) => {
         navigate("/strategies");
       },
-      enabled: !!id,
+      enabled: !!actualStrategy?.webhook_id,
     }
   );
-
-  const { data: myStrategies, isLoading: loadingStrategies } = useQuery<
-    IStrategy[]
-  >(["myStrategies"], getPopularStrategies);
-
-  const actualStrategy = myStrategies?.find((s) => s.id === id);
 
   const { data: ordersByStrategy, isFetching } = useQuery<Order[]>(
     ["ordersByWebhook", actualStrategy?.webhook_id],
@@ -200,9 +146,9 @@ function Strategy({}: Props) {
     }
   );
 
-  console.log("data", data);
-  console.log("strategy", myStrategies);
-  console.log("ordersByStrategy", ordersByStrategy);
+  // console.log("data", data);
+  // console.log("strategy", myStrategies);
+  // console.log("ordersByStrategy", ordersByStrategy);
 
   if (isLoading || loadingStrategies) return <LoadingOverlay visible />;
 
@@ -337,7 +283,7 @@ function Strategy({}: Props) {
               accessor: "status",
               title: "Status",
               render: (value) => (
-                <Badge color={value.status === "closed" ? "red" : "green"}>
+                <Badge color={getStatusColor(value.status)}>
                   {value.status}
                 </Badge>
               ),

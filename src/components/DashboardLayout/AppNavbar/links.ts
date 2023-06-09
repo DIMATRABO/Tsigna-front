@@ -24,11 +24,11 @@ export const links: Array<Link> = [
     icon: IconBulb,
     path: "/strategies",
   },
-  {
-    label: "Admin",
-    icon: IconUser,
-    path: "/admin",
-  },
+  // {
+  //   label: "Admin",
+  //   icon: IconUser,
+  //   path: "/admin",
+  // },
 ];
 
 // export const links: Array<Link> = [

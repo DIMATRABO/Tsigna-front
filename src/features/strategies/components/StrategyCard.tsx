@@ -1,26 +1,18 @@
 import {
-  Paper,
-  rem,
-  Group,
   Flex,
-  Text,
+  Group,
   LoadingOverlay,
   Menu,
+  Paper,
+  Text,
+  rem,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import {
-  IconStar,
   IconCoin,
-  IconUserCircle,
-  IconWallet,
   IconDotsVertical,
-  IconArrowsLeftRight,
-  IconMessageCircle,
-  IconPhoto,
-  IconSearch,
-  IconSettings,
-  IconTrash,
   IconEye,
+  IconWallet,
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -46,12 +38,10 @@ const StrategyCard = ({ strategy }: Props) => {
   );
 
   const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
-    modals.openConfirmModal({
-      title: "This is modal at second layer",
-      labels: { confirm: "Close", cancel: "Back" },
-      closeOnConfirm: false,
+    modals.open({
+      title: "Webhook Details ",
+
       children: <ApiKeyModal webhookUrl={webhookUrl} webhookKey={webhookKey} />,
-      onConfirm: modals.closeAll,
     });
 
   if (isLoading) return <LoadingOverlay visible />;
@@ -119,7 +109,12 @@ const StrategyCard = ({ strategy }: Props) => {
           </Text>
         </Flex>
       </Flex>
-      <Flex mt="sm" gap={20} align="center">
+      <Flex
+        mt="sm"
+        gap={20}
+        align="center"
+        onClick={() => navigate(`/strategies/${strategy.id}`)}
+      >
         <Flex direction={"column"}>
           <Text c="green" fz="xl" weight={500}>
             {strategy.income_7_days}

@@ -10,10 +10,21 @@ export interface Order {
   symbol: string;
   symbol_id: string;
   amount: number;
-  status: string;
+  status: Status;
   reception_date: string;
   execution_id: string;
   execution_price: number;
   execution_date: string;
   response: null;
+}
+
+// 'open', 'closed', 'canceled', 'expired', 'rejected', 'failed'
+
+export enum Status {
+  Open = "open",
+  Closed = "closed",
+  Canceled = "canceled",
+  Expired = "expired",
+  Rejected = "rejected",
+  Failed = "failed",
 }

@@ -19,7 +19,7 @@ import { UserButton } from "./UserButton";
 import MainLinks from "./MainLinks";
 import { links } from "./links";
 import { useStyles } from "components/shared/styles";
-import { IconDoorEnter } from "@tabler/icons-react";
+import { IconDoorEnter, IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "context/user";
 
@@ -55,10 +55,12 @@ const AppNavbar = () => {
               },
             })}
           >
-            <Avatar
+            <IconUser size={40} />
+            {/* <Avatar
               src="https://picsum.photos/600/600"
               alt="it's me"
               radius="100%"
+              
               sx={{
                 width: rem(40),
                 height: rem(40),
@@ -67,7 +69,7 @@ const AppNavbar = () => {
                   height: rem(50),
                 },
               }}
-            />
+            /> */}
             <Box
               sx={{
                 marginLeft: rem(10),

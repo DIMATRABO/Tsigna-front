@@ -23,7 +23,7 @@ import { Route, Routes } from "react-router-dom";
 import Strategy from "features/strategies/components/Strategy";
 
 function App() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
@@ -48,7 +48,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/wallet/:id" element={<MyWallet />} />
-              <Route path="/admin" element={<Admin />} />
+              {/* <Route path="/admin" element={<Admin />} /> */}
               <Route path="/strategies" element={<Strategies />} />
               <Route path="/strategies/:id" element={<Strategy />} />
               <Route path="/profile" element={<Profile />} />

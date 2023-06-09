@@ -1,39 +1,37 @@
 import {
-  Title,
-  createStyles,
-  Group,
+  Badge,
+  Box,
+  Flex,
+  LoadingOverlay,
   Paper,
   SimpleGrid,
   Text,
+  Title,
+  createStyles,
   rem,
-  ThemeIcon,
-  Flex,
-  Badge,
-  Box,
-  LoadingOverlay,
 } from "@mantine/core";
-import { IconUserPlus } from "@tabler/icons-react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar, Line, Pie } from "react-chartjs-2";
-import "chart.js/auto";
-import { DataTable } from "mantine-datatable";
-import "./test.css";
-import { theme } from "config/mantine";
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getHomeData } from "services/dashboard";
-import DashboardCard from "./DashboardCard";
-import { HomeData } from "types/dashboard";
-import { getMyOrders } from "services/orders";
-import { Order } from "types/order";
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Tooltip,
+} from "chart.js";
+import "chart.js/auto";
 import dayjs from "dayjs";
+import { DataTable } from "mantine-datatable";
+import { useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
+import { getHomeData } from "services/dashboard";
+import { getMyOrders } from "services/orders";
+import { HomeData } from "types/dashboard";
+import { Order } from "types/order";
+import { chartDataInit, options, pieOptions } from "utils/charts";
+import { getStatusColor, hexColors } from "utils/colors";
+import DashboardCard from "./DashboardCard";
+import "./test.css";
 
 type Props = {};
 
@@ -67,60 +65,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const data = [
-  {
-    title: "Revenue",
-    icon: "IconReceipt2",
-    value: "13,456",
-    diff: 34,
-  },
-  {
-    title: "Profit",
-    icon: "IconCoin",
-    value: "4,145",
-    diff: -13,
-  },
-  {
-    title: "Coupons usage",
-    icon: "IconDiscount2",
-    value: "745",
-    diff: 18,
-  },
-  {
-    title: "New customers",
-    icon: "IconUserPlus",
-    value: "188",
-    diff: -30,
-  },
-];
-
-const dataTable = [
-  {
-    id: 1,
-    date: "2021-09-01",
-    tradingPair: "BTC/USDT",
-    direction: "Buy",
-    amount: 100,
-    entryPrice: 100,
-  },
-  {
-    id: 2,
-    date: "2021-09-01",
-    tradingPair: "BTC/USDT",
-    direction: "Sell",
-    amount: 100,
-    entryPrice: 100,
-  },
-  {
-    id: 3,
-    date: "2021-09-01",
-    tradingPair: "BTC/USDT",
-    direction: "Buy",
-    amount: 100,
-    entryPrice: 100,
-  },
-];
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -129,60 +73,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const chartDataInit = {
-  labels: ["January", "February", "March", "April", "May"],
-  datasets: [
-    {
-      label: "Revenue",
-      data: [-50, 70, -40, 60, 80],
-      backgroundColor: [-50, 70, -40, 60, 80].map((n) => {
-        if (n < 0) return "rgba(255, 99, 132, 0.5)";
-        else return "rgba(54, 162, 235, 0.5)";
-      }), // Violet color
-      borderColor: "rgba(153, 102, 255, 0.5)",
-    },
-  ],
-};
-
-const options = {
-  plugins: {
-    legend: {
-      labels: {
-        boxWidth: 0,
-      },
-    },
-  },
-  scales: {
-    y: {
-      // beginAtZero: true,
-      grid: {
-        color: "#80808040",
-      },
-    },
-    x: {
-      grid: {
-        color: "#80808040",
-      },
-    },
-  },
-};
-
-const pieOptions = {
-  scales: {
-    y: {
-      // beginAtZero: true,
-      grid: {
-        color: "#80808040",
-      },
-    },
-    x: {
-      grid: {
-        color: "#80808040",
-      },
-    },
-  },
-};
 
 const Dashboard = ({}: Props) => {
   const { classes } = useStyles();
@@ -223,11 +113,7 @@ const Dashboard = ({}: Props) => {
               label: "Profit",
               data: data.orders_by_strategy.map((item) => item[1] as number),
               //@ts-ignore
-              backgroundColor: Object.values(data?.monthly_profit ?? {}).map(
-                (n) => {
-                  return `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`;
-                }
-              ),
+              backgroundColor: hexColors,
               borderColor: "rgba(153, 102, 255, 0.5)",
             },
           ],
@@ -328,7 +214,7 @@ const Dashboard = ({}: Props) => {
           ))} */}
         </SimpleGrid>
         <Flex
-          w="100%"
+          // w="100%"
           direction="column"
           justify="between"
           align="center"
@@ -344,9 +230,9 @@ const Dashboard = ({}: Props) => {
           <Paper
             sx={(theme) => ({
               flex: 1,
-              height: "400px",
 
-              maxWidth: "600px",
+              height: "400px",
+              // maxWidth: "600px",
               borderRadius: "10px",
               padding: "5px",
               "@media (min-width: 1080px)": {
@@ -360,9 +246,9 @@ const Dashboard = ({}: Props) => {
             sx={(theme) => ({
               flex: 1,
               borderRadius: "10px",
-              height: "400px",
 
-              maxWidth: "400px",
+              height: "400px",
+              // maxWidth: "400px",
               padding: "5px",
               "@media (min-width: 1080px)": {
                 padding: "20px",
@@ -423,7 +309,7 @@ const Dashboard = ({}: Props) => {
                 accessor: "status",
                 title: "Status",
                 render: (value) => (
-                  <Badge color={value.status === "closed" ? "red" : "green"}>
+                  <Badge color={getStatusColor(value.status)}>
                     {value.status}
                   </Badge>
                 ),

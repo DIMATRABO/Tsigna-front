@@ -94,12 +94,10 @@ const AddStrategyModal = ({}: Props) => {
   );
 
   const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
-    modals.openConfirmModal({
-      title: "This is modal at second layer",
-      labels: { confirm: "Close", cancel: "Back" },
-      closeOnConfirm: false,
+    modals.open({
+      title: "Webhook Details ",
+
       children: <ApiKeyModal webhookUrl={webhookUrl} webhookKey={webhookKey} />,
-      onConfirm: modals.closeAll,
     });
 
   const symbolData = symbols && Object.keys(symbols);
