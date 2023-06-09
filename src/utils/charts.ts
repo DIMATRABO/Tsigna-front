@@ -1,9 +1,9 @@
 export const chartDataInit = {
-  labels: ["January", "February", "March", "April", "May"],
+  labels: [""],
   datasets: [
     {
       label: "Revenue",
-      data: [-50, 70, -40, 60, 80],
+      data: [0],
       backgroundColor: [-50, 70, -40, 60, 80].map((n) => {
         if (n < 0) return "rgba(255, 99, 132, 0.5)";
         else return "rgba(54, 162, 235, 0.5)";

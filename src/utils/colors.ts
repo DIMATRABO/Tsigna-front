@@ -43,18 +43,18 @@ export const hexColors = [
 export const getStatusColor = (status: Status) => {
   switch (status) {
     case Status.Open:
-      return "#808080";
+      return "blue";
     case Status.Closed:
-      return "#00FF00";
+      return "green";
     case Status.Canceled:
-      return "#FF0000";
+      return "pink";
     case Status.Expired:
-      return "#FFA500";
+      return "orange";
     case Status.Rejected:
-      return "#690769";
+      return "red";
     case Status.Failed:
-      return "#c10a0a";
+      return "red";
     default:
-      return "#000000";
+      return "blue";
   }
 };

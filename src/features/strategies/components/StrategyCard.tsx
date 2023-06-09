@@ -132,7 +132,11 @@ const StrategyCard = ({ strategy }: Props) => {
           </Text>
         </Flex>
       </Flex>
-      <Flex gap={20} align="center">
+      <Flex
+        gap={20}
+        align="center"
+        onClick={() => navigate(`/strategies/${strategy.id}`)}
+      >
         <Flex direction={"column"}>
           <Text
             fz="xl"
@@ -158,7 +162,12 @@ const StrategyCard = ({ strategy }: Props) => {
           </Text>
         </Flex>
       </Flex>
-      <Flex justify={"space-between"} mt={20} align="center">
+      <Flex
+        justify={"space-between"}
+        mt={20}
+        align="center"
+        onClick={() => navigate(`/strategies/${strategy.id}`)}
+      >
         <Flex direction={"column"}>
           <Text c="dimmed" fz="sm">
             Capital :{" "}

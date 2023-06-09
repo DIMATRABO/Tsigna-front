@@ -283,7 +283,13 @@ function Strategy({}: Props) {
               accessor: "status",
               title: "Status",
               render: (value) => (
-                <Badge color={getStatusColor(value.status)}>
+                <Badge
+                  color={getStatusColor(value.status)}
+                  // sx={(theme) => ({
+                  //   backgroundColor: getStatusColor(value.status),
+                  //   color: theme.colorScheme === "dark" ? "white" : "black",
+                  // })}
+                >
                   {value.status}
                 </Badge>
               ),

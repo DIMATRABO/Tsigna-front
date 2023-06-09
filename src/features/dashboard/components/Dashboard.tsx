@@ -232,7 +232,7 @@ const Dashboard = ({}: Props) => {
               flex: 1,
 
               height: "400px",
-              // maxWidth: "600px",
+              maxWidth: "600px",
               borderRadius: "10px",
               padding: "5px",
               "@media (min-width: 1080px)": {
@@ -240,7 +240,7 @@ const Dashboard = ({}: Props) => {
               },
             })}
           >
-            <Bar data={chartData} options={options} />
+            {homeData && <Bar data={chartData} options={options} />}
           </Paper>
           <Paper
             sx={(theme) => ({
@@ -248,7 +248,7 @@ const Dashboard = ({}: Props) => {
               borderRadius: "10px",
 
               height: "400px",
-              // maxWidth: "400px",
+              maxWidth: "400px",
               padding: "5px",
               "@media (min-width: 1080px)": {
                 padding: "20px",
@@ -309,7 +309,13 @@ const Dashboard = ({}: Props) => {
                 accessor: "status",
                 title: "Status",
                 render: (value) => (
-                  <Badge color={getStatusColor(value.status)}>
+                  <Badge
+                    color={getStatusColor(value.status)}
+                    // sx={(theme) => ({
+                    //   backgroundColor: getStatusColor(value.status),
+                    //   color: theme.colorScheme === "dark" ? "white" : "black",
+                    // })}
+                  >
                     {value.status}
                   </Badge>
                 ),
