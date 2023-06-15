@@ -25,9 +25,9 @@ import { DataTable } from "mantine-datatable";
 import { useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { getHomeData } from "services/dashboard";
-import { getMyOrders } from "services/orders";
+import { getMyOrders, getMyOrdersPaginated } from "services/orders";
 import { HomeData } from "types/dashboard";
-import { Order } from "types/order";
+import { Order, OrderPaginated } from "types/order";
 import { chartDataInit, options, pieOptions } from "utils/charts";
 import { getStatusColor, hexColors } from "utils/colors";
 import DashboardCard from "./DashboardCard";
@@ -74,10 +74,13 @@ ChartJS.register(
   Legend
 );
 
+const LIMIT = 10;
+
 const Dashboard = ({}: Props) => {
   const { classes } = useStyles();
   const [chartData, setChartData] = useState(chartDataInit);
   const [pieData, setPieData] = useState(chartDataInit);
+  const [page, setPage] = useState(1);
 
   const { data: homeData, isLoading } = useQuery<HomeData>(
     ["homeData"],
@@ -122,10 +125,13 @@ const Dashboard = ({}: Props) => {
     }
   );
 
-  const { data: myOrders, isFetching } = useQuery<Order[]>(
-    ["myOrders"],
-    getMyOrders
+  const { data: myOrders } = useQuery<Order[]>(["myOrders"], getMyOrders);
+
+  const { data: myOrdersPaginated, isFetching } = useQuery<OrderPaginated>(
+    ["myOrdersPaginated", page],
+    () => getMyOrdersPaginated(page, LIMIT)
   );
+
   console.log("homeData", homeData);
   console.log("myOrders", myOrders);
 
@@ -275,6 +281,10 @@ const Dashboard = ({}: Props) => {
             fetching={isFetching}
             withBorder
             striped
+            totalRecords={myOrdersPaginated?.total_records ?? 0}
+            page={page}
+            onPageChange={setPage}
+            recordsPerPage={LIMIT}
             columns={[
               {
                 accessor: "execution_date",
@@ -321,7 +331,7 @@ const Dashboard = ({}: Props) => {
                 ),
               },
             ]}
-            records={myOrders}
+            records={myOrdersPaginated?.orders ?? []}
           />
         </Paper>
       </Box>

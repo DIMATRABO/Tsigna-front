@@ -47,7 +47,7 @@ function App() {
             <Route element={<ProtectedRoutes />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/wallet" element={<Wallet />} />
-              <Route path="/wallet/:id" element={<MyWallet />} />
+              {/* <Route path="/wallet/:id" element={<MyWallet />} /> */}
               {/* <Route path="/admin" element={<Admin />} /> */}
               <Route path="/strategies" element={<Strategies />} />
               <Route path="/strategies/:id" element={<Strategy />} />

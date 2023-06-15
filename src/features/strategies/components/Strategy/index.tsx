@@ -26,9 +26,12 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { getMyOrdersByWebhook } from "services/orders";
+import {
+  getMyOrdersByWebhook,
+  getMyOrdersByWebhookPaginated,
+} from "services/orders";
 import { DataTable } from "mantine-datatable";
-import { Order } from "types/order";
+import { Order, OrderPaginated } from "types/order";
 import dayjs from "dayjs";
 import { getStatusColor, hexColors } from "utils/colors";
 import { chartDataInit, options, pieOptions } from "utils/charts";
@@ -74,10 +77,13 @@ ChartJS.register(
   Legend
 );
 
+const LIMIT = 5;
+
 function Strategy({}: Props) {
   const { classes } = useStyles();
   const [chartData, setChartData] = useState(chartDataInit);
   const [pieData, setPieData] = useState(chartDataInit);
+  const [page, setPage] = useState(1);
   const id = useParams<{ id: string }>().id;
   const navigate = useNavigate();
 
@@ -86,8 +92,6 @@ function Strategy({}: Props) {
   >(["myStrategies"], getPopularStrategies);
 
   const actualStrategy = myStrategies?.find((s) => s.id === id);
-
-  console.log("actualStrategy", actualStrategy);
 
   const { data, isLoading } = useQuery<StrategyDashboardData>(
     ["strategy", actualStrategy?.webhook_id],
@@ -146,9 +150,18 @@ function Strategy({}: Props) {
     }
   );
 
-  // console.log("data", data);
+  const { data: ordersByStrategyPaginated } = useQuery<OrderPaginated>(
+    ["ordersByWebhookPaginated", actualStrategy?.webhook_id, page],
+    () =>
+      getMyOrdersByWebhookPaginated(actualStrategy?.webhook_id!, page, LIMIT),
+    {
+      enabled: !!actualStrategy?.webhook_id,
+    }
+  );
+
+  console.log("ordersByStrategyPaginated", ordersByStrategyPaginated);
   // console.log("strategy", myStrategies);
-  // console.log("ordersByStrategy", ordersByStrategy);
+  console.log("ordersByStrategy", ordersByStrategy);
 
   if (isLoading || loadingStrategies) return <LoadingOverlay visible />;
 
@@ -249,6 +262,10 @@ function Strategy({}: Props) {
           fetching={isFetching}
           withBorder
           striped
+          totalRecords={ordersByStrategyPaginated?.total_records ?? 0}
+          page={page}
+          onPageChange={setPage}
+          recordsPerPage={LIMIT}
           columns={[
             {
               accessor: "execution_date",
@@ -295,7 +312,7 @@ function Strategy({}: Props) {
               ),
             },
           ]}
-          records={ordersByStrategy}
+          records={ordersByStrategyPaginated?.orders ?? []}
         />
       </Paper>
     </Flex>

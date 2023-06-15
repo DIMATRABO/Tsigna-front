@@ -12,15 +12,18 @@ import {
   IconCoin,
   IconDotsVertical,
   IconEye,
+  IconTrash,
   IconWallet,
 } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { getMyWallets } from "services/wallet";
 import { Strategy } from "types/strategy";
 import { IWallet } from "types/wallet";
 import ApiKeyModal from "./ApiKeyModal";
+import { deleteStrategy } from "services/strategy";
+import { notifications } from "@mantine/notifications";
 
 type Props = {
   strategy: Strategy;
@@ -28,6 +31,7 @@ type Props = {
 
 const StrategyCard = ({ strategy }: Props) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: wallets, isLoading } = useQuery<IWallet[]>(
     ["myWallets"],
     getMyWallets,
@@ -37,11 +41,54 @@ const StrategyCard = ({ strategy }: Props) => {
     }
   );
 
+  const { mutate: deleteStrategyMutation, isLoading: isDeleting } = useMutation(
+    (id: string) => deleteStrategy(id),
+    {
+      onSuccess(data, variables, context) {
+        notifications.show({
+          title: "Strategy Deleted",
+
+          message: "Strategy deleted successfully",
+          color: "teal",
+        });
+        queryClient.invalidateQueries(["myStrategies"]);
+      },
+      onError(error, variables, context) {
+        notifications.show({
+          title: "Error",
+
+          message: "Error deleting strategy",
+          color: "red",
+        });
+      },
+    }
+  );
+
   const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
     modals.open({
       title: "Webhook Details ",
 
       children: <ApiKeyModal webhookUrl={webhookUrl} webhookKey={webhookKey} />,
+    });
+
+  const openDeleteStartegyModal = (id: string) =>
+    modals.openConfirmModal({
+      title: "Delete Strategy",
+      children: "Are you sure you want to delete this strategy ?",
+      confirmProps: {
+        color: "red",
+        variant: "outline",
+      },
+      cancelProps: {
+        variant: "outline",
+      },
+      labels: {
+        confirm: "Delete",
+        cancel: "Cancel",
+      },
+      onConfirm: () => {
+        deleteStrategyMutation(id);
+      },
     });
 
   if (isLoading) return <LoadingOverlay visible />;
@@ -82,6 +129,13 @@ const StrategyCard = ({ strategy }: Props) => {
               }
             >
               View Details
+            </Menu.Item>
+            <Menu.Item
+              icon={<IconTrash size={14} color="red" />}
+              onClick={() => openDeleteStartegyModal(strategy.id)}
+              color="red"
+            >
+              Delete Strategy
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

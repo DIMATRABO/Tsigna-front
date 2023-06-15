@@ -10,3 +10,8 @@ export const getMyWallets = async () => {
   const { data } = await instance.get("/accounts/me");
   return data;
 };
+
+export const deletWallet = async (id: string) => {
+  const { data } = await instance.delete("/accounts/" + id);
+  return data;
+};

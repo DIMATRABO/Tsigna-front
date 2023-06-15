@@ -20,3 +20,8 @@ export const getStrategy = async (id: string) => {
   const { data } = await instance.get("/strategies/me/" + id);
   return data;
 };
+
+export const deleteStrategy = async (id: string) => {
+  const { data } = await instance.delete("/strategies/" + id);
+  return data;
+};
