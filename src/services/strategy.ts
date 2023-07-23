@@ -25,3 +25,8 @@ export const deleteStrategy = async (id: string) => {
   const { data } = await instance.delete("/strategies/" + id);
   return data;
 };
+
+export const getPublicStrategiesPaginated = async (page : number, pageSize : number) => {
+  const {data} = await instance.get('/publicstrategies?page=' +  page + '&page_size=' + pageSize)
+  return data
+}

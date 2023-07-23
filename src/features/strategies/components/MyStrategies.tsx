@@ -1,28 +1,17 @@
 import {
-  Paper,
-  Group,
-  rem,
-  Progress,
-  SimpleGrid,
-  Text,
-  Flex,
-  Button,
   LoadingOverlay,
+  SimpleGrid
 } from "@mantine/core";
-import { IconUserCircle, IconStar, IconCoin } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useStyles } from "components/shared/styles";
-import { useState } from "react";
-import { getPopularStrategies, getStrategies } from "services/strategy";
-import StrategyCard from "./StrategyCard";
+import { getPopularStrategies } from "services/strategy";
 import { Strategy } from "types/strategy";
-import PopularStrategyCard from "./PopularStrategyCard";
+import StrategyCard from "./StrategyCard";
 
 type Props = {
-  isPopular?: boolean;
 };
 
-function Strategies({ isPopular }: Props) {
+function Strategies({  }: Props) {
   const { classes } = useStyles();
 
   const { data: myStrategies, isLoading } = useQuery<Strategy[]>(
@@ -45,14 +34,11 @@ function Strategies({ isPopular }: Props) {
           { maxWidth: "55rem", cols: 1, spacing: "sm" },
         ]}
       >
-        {!isPopular &&
+        {
           myStrategies &&
           myStrategies.map((s) => <StrategyCard key={s.id} strategy={s} />)}
 
-        {/* {isPopular &&
-          Array.from({ length: 8 }).map((_, i) => (
-            <PopularStrategyCard key={i} />
-          ))} */}
+       
       </SimpleGrid>
     </>
   );

@@ -7,6 +7,7 @@ import ApiKeyModal from "./ApiKeyModal";
 import MyStrategies from "./MyStrategies";
 import { getStrategies } from "services/strategy";
 import { useQuery } from "@tanstack/react-query";
+import PublicStrategies from "./PublicStrategies";
 
 type Props = {};
 
@@ -42,21 +43,27 @@ const Strategies = ({}: Props) => {
           <Tabs.Tab value="myStrategies" icon={<IconMoodPin size="0.8rem" />}>
             My strategies
           </Tabs.Tab>
-          {/* <Tabs.Tab
+          <Tabs.Tab
             value="popularStrategies"
             icon={<IconSparkles size="0.8rem" />}
           >
-            Popular strategies
-          </Tabs.Tab> */}
+            Public strategies
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="subscribed"
+            icon={<IconSparkles size="0.8rem" />}
+          >
+            Subscribed
+          </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="myStrategies" pt="xs">
           <MyStrategies />
         </Tabs.Panel>
 
-        {/* <Tabs.Panel value="popularStrategies" pt="xs">
-          <MyStrategies isPopular />
-        </Tabs.Panel> */}
+        <Tabs.Panel value="popularStrategies" pt="xs">
+          <PublicStrategies />
+        </Tabs.Panel>
       </Tabs>
     </Flex>
   );
