@@ -71,7 +71,7 @@ const AddUserForm = ({}: Props) => {
           {...formAdd.getInputProps("birthDate")}
         />
 
-        <Button color="violet" variant="light" fullWidth type="submit">
+        <Button color="violet" fullWidth type="submit">
           Add User
         </Button>
       </Flex>

@@ -13,22 +13,32 @@ export const links: Array<Link> = [
     icon: IconLayoutDashboard,
     label: "Dashboard",
     path: "/dashboard",
+    roles: ["user"],
   },
   {
     label: "Wallet",
     icon: IconWallet,
     path: "/wallet",
+    roles: ["user"],
   },
   {
     label: "Strategies",
     icon: IconBulb,
     path: "/strategies",
+    roles: ["user"],
   },
-  // {
-  //   label: "Admin",
-  //   icon: IconUser,
-  //   path: "/admin",
-  // },
+  {
+    label: "Users",
+    icon: IconUser,
+    path: "/users",
+    roles: ["genin"],
+  },
+  {
+    label: "Strategies",
+    icon: IconBulb,
+    path: "/adminStrategies",
+    roles: ["genin"],
+  },
 ];
 
 // export const links: Array<Link> = [

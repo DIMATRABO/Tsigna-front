@@ -8,7 +8,7 @@ import { Notifications } from "@mantine/notifications";
 import ProtectedRoutes from "components/ProtectedRoutes";
 import { theme } from "config/mantine";
 import AdminLogin from "features/admin/components/AdminLogin";
-import Admin from "features/admin/components/Admin";
+import Admin from "features/admin/components/Users";
 import Login from "features/auth/components/Login";
 import Signup from "features/auth/components/Signup";
 import Dashboard from "features/dashboard/components/Dashboard";
@@ -21,6 +21,10 @@ import Wallet from "features/wallet/components/Wallet";
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Strategy from "features/strategies/components/Strategy";
+import RolesRoute from "components/RolesRoute";
+import { UserRole } from "types/user";
+import Users from "features/admin/components/Users";
+import AdminStrategies from "features/admin/components/AdminStrategies";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
@@ -45,12 +49,17 @@ function App() {
             <Route path="/admin/login" element={<AdminLogin />} />
 
             <Route element={<ProtectedRoutes />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/wallet" element={<Wallet />} />
-              {/* <Route path="/wallet/:id" element={<MyWallet />} /> */}
-              {/* <Route path="/admin" element={<Admin />} /> */}
-              <Route path="/strategies" element={<Strategies />} />
-              <Route path="/strategies/:id" element={<Strategy />} />
+              <Route element={<RolesRoute roles={[UserRole.USER]} />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/wallet" element={<Wallet />} />
+                {/* <Route path="/wallet/:id" element={<MyWallet />} /> */}
+                <Route path="/strategies" element={<Strategies />} />
+                <Route path="/strategies/:id" element={<Strategy />} />
+              </Route>
+              <Route element={<RolesRoute roles={[UserRole.GENIN]} />}>
+                <Route path="/users" element={<Users />} />
+                <Route path="/adminStrategies" element={<AdminStrategies />} />
+              </Route>
               <Route path="/profile" element={<Profile />} />
             </Route>
             <Route path="*" element={<Login />} />

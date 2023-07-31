@@ -44,7 +44,9 @@ const PublicStrategies = ({}: Props) => {
       </SimpleGrid>
       <Center>
         <Pagination
-          total={data?.total_records || 0}
+          total={
+            data?.total_records ? Math.round(data.total_records / LIMIT) : 0
+          }
           value={page}
           onChange={setPage}
           align="center"

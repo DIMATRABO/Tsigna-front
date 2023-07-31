@@ -22,6 +22,7 @@ const UserContextProvider = ({ children }: Props) => {
     onSuccess: (user) => {
       setUser({
         ...user,
+        privilege: user.privilege ? user.privilege : "user",
       });
     },
     onError: (error: AxiosError) => {

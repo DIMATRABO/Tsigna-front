@@ -13,4 +13,32 @@ export interface IUser {
   subscription_plan: null;
   is_actif: boolean;
   accounts: any[];
+  privilege: UserRole;
+}
+
+export enum UserRole {
+  USER = "user",
+  GENIN = "genin",
+}
+
+export interface IUsersResponse {
+  total_records: number;
+  page_number: number;
+  page_size: number;
+  users: User[];
+}
+
+export interface User {
+  id: string;
+  client_id: null;
+  email: string;
+  password: null;
+  first_name: string;
+  last_name: string;
+  birthday: string;
+  created_at: string;
+  expiration_date: null;
+  subscription_plan: null;
+  is_actif: boolean;
+  accounts: any[];
 }

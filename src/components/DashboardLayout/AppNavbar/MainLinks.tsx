@@ -9,6 +9,7 @@ import { useStyles } from "components/shared/styles";
 import { Link } from "types/link";
 // import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from "@mantine/hooks";
+import { AuthContext } from "context/user";
 
 type Props = {
   links: Link[];
@@ -17,7 +18,7 @@ type Props = {
 const MainLinks = ({ links }: Props) => {
   // const { t } = useTranslation();
   const { classes } = useStyles();
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 765px)");
@@ -25,9 +26,9 @@ const MainLinks = ({ links }: Props) => {
   return (
     <Group>
       {links.map((link, i) => {
-        // if (user && !link.roles?.includes(user.role)) {
-        //   return null;
-        // }
+        if (user && !link.roles?.includes(user.privilege)) {
+          return null;
+        }
 
         if (link.links) {
           const nestedLinks = link.links?.map((link, i) => {

@@ -34,5 +34,11 @@ export const loginSchema = object({
   keepLoggedIn: z.boolean().optional(),
 });
 
+export const adminLoginSchema = object({
+  login: string({}),
+  password: string({}),
+});
+
 export type SignupSchemaType = z.infer<typeof signupSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+export type AdminLoginSchemaType = z.infer<typeof adminLoginSchema>;

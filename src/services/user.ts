@@ -9,3 +9,10 @@ export const changePassword = async (data: ProfileSchemaType) => {
   });
   return response.data;
 };
+
+export const getAllUsersPaginated = async (page: number, page_size: number) => {
+  const { data } = await instance.get(
+    `/users/paginate?page=${page}&page_size=${page_size}`
+  );
+  return data;
+};

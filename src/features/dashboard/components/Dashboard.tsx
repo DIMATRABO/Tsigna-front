@@ -22,7 +22,7 @@ import {
 import "chart.js/auto";
 import dayjs from "dayjs";
 import { DataTable } from "mantine-datatable";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { getHomeData } from "services/dashboard";
 import { getMyOrders, getMyOrdersPaginated } from "services/orders";
@@ -32,6 +32,7 @@ import { chartDataInit, options, pieOptions } from "utils/charts";
 import { getStatusColor, hexColors } from "utils/colors";
 import DashboardCard from "./DashboardCard";
 import "./test.css";
+import { AuthContext } from "context/user";
 
 type Props = {};
 
@@ -82,6 +83,9 @@ const Dashboard = ({}: Props) => {
   const [pieData, setPieData] = useState(chartDataInit);
   const [page, setPage] = useState(1);
 
+  const { user } = useContext(AuthContext);
+
+  console.log("user", user);
   const { data: homeData, isLoading } = useQuery<HomeData>(
     ["homeData"],
     getHomeData,

@@ -22,3 +22,8 @@ export const getMe = async () => {
   const { data } = await instance.get("/users/me");
   return data;
 };
+
+export const adminLogin = async (login: string, password: string) => {
+  const { data } = await instance.post("/super/auth", { login, password });
+  return data;
+};

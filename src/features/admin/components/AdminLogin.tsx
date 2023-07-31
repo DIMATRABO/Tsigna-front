@@ -1,5 +1,10 @@
 import { useForm, zodResolver } from "@mantine/form";
-import { LoginSchemaType, loginSchema } from "../../auth/schemas/authSchemas";
+import {
+  AdminLoginSchemaType,
+  LoginSchemaType,
+  adminLoginSchema,
+  loginSchema,
+} from "../../auth/schemas/authSchemas";
 import {
   Anchor,
   Button,
@@ -11,21 +16,66 @@ import {
   TextInput,
   Title,
   Text,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useStyles } from "components/shared/styles";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { adminLogin } from "services/auth";
+import { showNotification } from "@mantine/notifications";
+import { AuthContext } from "context/user";
+import { useContext, useEffect } from "react";
 type Props = {};
 
 const AdminLogin = ({}: Props) => {
-  const form = useForm<LoginSchemaType>({
-    validate: zodResolver(loginSchema),
+  const form = useForm<AdminLoginSchemaType>({
+    validate: zodResolver(adminLoginSchema),
   });
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const {
+    setAccessToken,
+    isLoading: loadingUser,
+    user,
+  } = useContext(AuthContext);
 
-  const onSubmit = (values: LoginSchemaType) => {
-    navigate("/dashboard");
+  const { mutate } = useMutation(
+    (values: AdminLoginSchemaType) => adminLogin(values.login, values.password),
+    {
+      onSuccess(data, variables, context) {
+        console.log("data", data);
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+
+        setAccessToken(data.access_token);
+        showNotification({
+          title: "Logged in!",
+          message: "You are now logged in.",
+          color: "teal",
+        });
+        window.location.reload();
+      },
+    }
+  );
+
+  const onSubmit = (values: AdminLoginSchemaType) => {
+    // navigate("/dashboard");
+    mutate(values);
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
+  if (loadingUser) {
+    return <LoadingOverlay visible />;
+  }
+
+  if (user) {
+    return null;
+  }
 
   return (
     <Container
@@ -61,9 +111,9 @@ const AdminLogin = ({}: Props) => {
           }}
         >
           <TextInput
-            {...form.getInputProps("email")}
-            label="Email"
-            placeholder="Enter your email"
+            {...form.getInputProps("login")}
+            label="Login"
+            placeholder="Enter your login"
             size="md"
           />
           <PasswordInput
