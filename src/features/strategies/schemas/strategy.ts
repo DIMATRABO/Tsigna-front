@@ -24,4 +24,12 @@ export const createStrategySchema = object({
   capital: number({ required_error: "Capital is required" }),
 });
 
+export const subscribeStrategySchema = object({
+  webhook_id: string({ required_error: "Webhook id is required" }).optional(),
+  account_id: string({ required_error: "Account id is required" }),
+  entry_size: number({ required_error: "Entry size is required" }),
+  capital: number({ required_error: "Capital is required" }),
+});
+
 export type CreateStrategySchema = z.infer<typeof createStrategySchema>;
+export type SubscribeStrategySchema = z.infer<typeof subscribeStrategySchema>;

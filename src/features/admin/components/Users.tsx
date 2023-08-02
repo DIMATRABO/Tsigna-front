@@ -6,6 +6,7 @@ import {
   Flex,
   Group,
   Select,
+  Switch,
   Text,
   TextInput,
 } from "@mantine/core";
@@ -16,11 +17,12 @@ import { DataTable } from "mantine-datatable";
 import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
 import AddUserForm from "./AddUserForm";
-import { useQuery } from "@tanstack/react-query";
-import { getAllUsersPaginated } from "services/user";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { activateUser, deleteUser, getAllUsersPaginated } from "services/user";
 import { useState } from "react";
 import { IUsersResponse, User } from "types/user";
 import EditUserForm from "./EditUserForm";
+import { showNotification } from "@mantine/notifications";
 
 export const EditUserSchema = z.object({
   firstName: z.string().nonempty({ message: "First name is required" }),
@@ -37,9 +39,54 @@ const LIMIT = 10;
 function Users() {
   const [page, setPage] = useState(1);
 
-  const { data: users, isFetching } = useQuery<IUsersResponse>(
-    ["users", page],
-    () => getAllUsersPaginated(page, LIMIT)
+  const {
+    data: users,
+    isFetching,
+    refetch,
+  } = useQuery<IUsersResponse>(["users", page], () =>
+    getAllUsersPaginated(page, LIMIT)
+  );
+
+  const { mutate: activateUserMutation, isLoading: isActivating } = useMutation(
+    (id: string) => activateUser(id),
+    {
+      onSuccess: () => {
+        showNotification({
+          title: "User activated",
+          message: "User has been activated",
+          color: "green",
+        });
+        refetch();
+      },
+      onError: (error) => {
+        showNotification({
+          title: "User activation failed",
+          message: "Something went wrong",
+          color: "red",
+        });
+      },
+    }
+  );
+
+  const { mutate: deleteUserMutation, isLoading: isDeleting } = useMutation(
+    (id: string) => deleteUser(id),
+    {
+      onSuccess: () => {
+        showNotification({
+          title: "User deleted",
+          message: "User has been deleted",
+          color: "green",
+        });
+        refetch();
+      },
+      onError: (error) => {
+        showNotification({
+          title: "User deletion failed",
+          message: "Something went wrong",
+          color: "red",
+        });
+      },
+    }
   );
 
   const editUser = (user: User) =>
@@ -57,7 +104,7 @@ function Users() {
       children: <AddUserForm />,
     });
 
-  const deleteUsers = () =>
+  const deleteUsers = (id: string) =>
     modals.openConfirmModal({
       title: "Delete User",
       children: (
@@ -69,6 +116,9 @@ function Users() {
       confirmProps: { color: "red" },
 
       labels: { confirm: "Confirm", cancel: "Cancel" },
+      onConfirm: () => {
+        deleteUserMutation(id);
+      },
     });
 
   return (
@@ -104,26 +154,29 @@ function Users() {
         page={page}
         onPageChange={setPage}
         recordsPerPage={LIMIT}
-        fetching={isFetching}
+        fetching={isFetching || isActivating}
         totalRecords={users?.total_records || 0}
         columns={[
           { accessor: "first_name" },
           { accessor: "last_name" },
           { accessor: "email" },
           {
-            accessor: "birthday",
-            render: (value) => new Date(value.birthday).toLocaleDateString(),
+            accessor: "expiration_date",
+            title: "Expiration Date",
+            render: (value) =>
+              new Date(value.expiration_date).toLocaleDateString(),
           },
-          {
-            accessor: "subscription_plan",
-            render: (value) => (
-              <Badge color="violet" variant="light">
-                {value.subscription_plan}
-              </Badge>
-            ),
-          },
+          // {
+          //   accessor: "subscription_plan",
+          //   render: (value) => (
+          //     <Badge color="violet" variant="light">
+          //       {value.subscription_plan}
+          //     </Badge>
+          //   ),
+          // },
           {
             accessor: "is_actif",
+            title: "Active",
             render: (value) => (
               <Badge color={value.is_actif ? "green" : "red"} variant="light">
                 {value.is_actif ? "Active" : "Inactive"}
@@ -139,8 +192,12 @@ function Users() {
                   <IconEdit size={16} onClick={() => editUser(user)} />
                 </ActionIcon>
                 <ActionIcon color="red">
-                  <IconTrash size={16} onClick={() => deleteUsers()} />
+                  <IconTrash size={16} onClick={() => deleteUsers(user.id)} />
                 </ActionIcon>
+                <Switch
+                  checked={user.is_actif}
+                  onChange={() => activateUserMutation(user.id)}
+                />
               </Group>
             ),
           },

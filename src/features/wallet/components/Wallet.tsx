@@ -17,30 +17,6 @@ import WalletCard from "./WalletCard";
 
 type Props = {};
 
-// export const wallets = [
-//   {
-//     id: "1",
-//     name: "My First wallet",
-//     balance: 1200,
-//     created: "12/12/2021",
-//     image: "binance.jpg",
-//   },
-//   {
-//     id: "2",
-//     name: "Kucoin wallet",
-//     balance: 2300,
-//     created: "12/12/2021",
-//     image: "kucoin.png",
-//   },
-//   {
-//     id: "3",
-//     name: "Last wallet",
-//     balance: 1923,
-//     created: "12/12/2021",
-//     image: "bybit.png",
-//   },
-// ];
-
 const Wallet = ({}: Props) => {
   const { classes } = useStyles();
   const { data, isLoading } = useQuery<IWallet[]>(["myWallets"], getMyWallets);

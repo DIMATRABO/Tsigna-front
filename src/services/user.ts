@@ -16,3 +16,13 @@ export const getAllUsersPaginated = async (page: number, page_size: number) => {
   );
   return data;
 };
+
+export const activateUser = async (id: string) => {
+  const response = await instance.patch(`/users/activate${id}`);
+  return response.data;
+};
+
+export const deleteUser = async (id: string) => {
+  const response = await instance.delete(`/users/${id}`);
+  return response.data;
+};

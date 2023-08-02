@@ -37,7 +37,7 @@ export interface User {
   last_name: string;
   birthday: string;
   created_at: string;
-  expiration_date: null;
+  expiration_date: Date;
   subscription_plan: null;
   is_actif: boolean;
   accounts: any[];

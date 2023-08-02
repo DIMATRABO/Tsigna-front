@@ -9,6 +9,7 @@ import {
   Divider,
   Button,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import {
   IconDotsVertical,
   IconEye,
@@ -21,6 +22,7 @@ import {
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { PublicStrat } from "types/strategy";
+import SubscribeModal from "./SubscribeModal";
 
 type Props = {
   strategy: PublicStrat;
@@ -28,6 +30,14 @@ type Props = {
 
 const PublicStratCard = ({ strategy }: Props) => {
   const navigate = useNavigate();
+
+  const openSubscribeModal = () =>
+    modals.open({
+      title: "Subscribe to this strategy",
+      size: "xl",
+      children: <SubscribeModal strategy={strategy} />,
+    });
+
   return (
     <Paper
       withBorder
@@ -182,7 +192,7 @@ const PublicStratCard = ({ strategy }: Props) => {
             </span>
           </Text>
         </Flex>
-        <Button>Copy</Button>
+        <Button onClick={openSubscribeModal}>Copy</Button>
       </Flex>
     </Paper>
   );
