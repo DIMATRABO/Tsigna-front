@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:14 AS build
+FROM node:16 AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY . .
 RUN yarn build
 
 # Serve Stage
-FROM node:14 AS serve
+FROM node:16 AS serve
 
 # Install serve
 RUN yarn global add serve
