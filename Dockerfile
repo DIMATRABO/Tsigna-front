@@ -1,25 +1,14 @@
-# Build Stage
-FROM node:16 AS build
+FROM node
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json .
 RUN yarn
 
 COPY . .
-RUN yarn build
 
-# Serve Stage
-FROM node:16 AS serve
+## EXPOSE [Port you mentioned in the vite.config file]
 
-# Install serve
-RUN yarn global add serve
+EXPOSE 5173
 
-# Copy build directory from build stage
-COPY --from=build /app/build /app
-
-WORKDIR /app
-
-EXPOSE 5000
-
-CMD ["serve", "-p", "5000", "-s", "."]
+CMD ["yarn",  "dev"] 
