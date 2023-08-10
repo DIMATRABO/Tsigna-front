@@ -10,7 +10,7 @@ export const AddUserSchema = z.object({
   lastName: z.string().nonempty({ message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email" }),
   subscription: z.string().nonempty({ message: "Subscription is required" }),
-  birthDate: z.string().nonempty({ message: "Birth date is required" }),
+  birthDate: z.date(),
 });
 
 export type AddUserValues = z.infer<typeof AddUserSchema>;

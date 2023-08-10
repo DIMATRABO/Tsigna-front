@@ -1,11 +1,11 @@
-import { date, number, object, string, z } from "zod";
+import { boolean, date, number, object, string, z } from "zod";
 
 export const publicStratSchema = object({
   name: string(),
 
   symbol: string(),
   symbol_id: string(),
-  is_future: string(),
+  is_future: boolean(),
   leverage: number(),
   capital: number(),
   backtesting_start_date: date(),

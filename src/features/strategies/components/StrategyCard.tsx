@@ -12,6 +12,7 @@ import {
   IconCoin,
   IconDotsVertical,
   IconEye,
+  IconLogout,
   IconTrash,
   IconWallet,
 } from "@tabler/icons-react";
@@ -22,14 +23,15 @@ import { getMyWallets } from "services/wallet";
 import { Strategy } from "types/strategy";
 import { IWallet } from "types/wallet";
 import ApiKeyModal from "./ApiKeyModal";
-import { deleteStrategy } from "services/strategy";
+import { deleteStrategy, unsubscribeFromStrategy } from "services/strategy";
 import { notifications } from "@mantine/notifications";
 
 type Props = {
   strategy: Strategy;
+  isSubscribed?: boolean;
 };
 
-const StrategyCard = ({ strategy }: Props) => {
+const StrategyCard = ({ strategy, isSubscribed }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: wallets, isLoading } = useQuery<IWallet[]>(
@@ -51,7 +53,11 @@ const StrategyCard = ({ strategy }: Props) => {
           message: "Strategy deleted successfully",
           color: "teal",
         });
-        queryClient.invalidateQueries(["myStrategies"]);
+        queryClient.invalidateQueries([
+          "subscribedStrategies",
+          "publicStrategies",
+          "myStrategies",
+        ]);
       },
       onError(error, variables, context) {
         notifications.show({
@@ -63,6 +69,31 @@ const StrategyCard = ({ strategy }: Props) => {
       },
     }
   );
+
+  const { mutate: unsubscribeStrategyMutation, isLoading: isUnsubscribing } =
+    useMutation((id: string) => unsubscribeFromStrategy(id), {
+      onSuccess(data, variables, context) {
+        notifications.show({
+          title: "Unsubscribed",
+
+          message: "Successfully unsubscribed from strategy",
+          color: "teal",
+        });
+        queryClient.invalidateQueries([
+          "subscribedStrategies",
+          "publicStrategies",
+          "myStrategies",
+        ]);
+      },
+      onError(error, variables, context) {
+        notifications.show({
+          title: "Error",
+
+          message: "Error unsubscribing from strategy",
+          color: "red",
+        });
+      },
+    });
 
   const openApiKeysModal = (webhookUrl: string, webhookKey: string) =>
     modals.open({
@@ -88,6 +119,26 @@ const StrategyCard = ({ strategy }: Props) => {
       },
       onConfirm: () => {
         deleteStrategyMutation(id);
+      },
+    });
+
+  const openUnsubscribeStartegyModal = (id: string) =>
+    modals.openConfirmModal({
+      title: "Unsubscribe Strategy",
+      children: "Are you sure you want to unsubscribe from this strategy ?",
+      confirmProps: {
+        color: "red",
+        variant: "outline",
+      },
+      cancelProps: {
+        variant: "outline",
+      },
+      labels: {
+        confirm: "Unsubscribe",
+        cancel: "Cancel",
+      },
+      onConfirm: () => {
+        unsubscribeStrategyMutation(id);
       },
     });
 
@@ -130,6 +181,17 @@ const StrategyCard = ({ strategy }: Props) => {
             >
               View Details
             </Menu.Item>
+            {isSubscribed && (
+              <Menu.Item
+                icon={<IconLogout size={14} />}
+                color="red"
+                onClick={() =>
+                  openUnsubscribeStartegyModal(strategy.webhook_id)
+                }
+              >
+                Unsubscribe
+              </Menu.Item>
+            )}
             <Menu.Item
               icon={<IconTrash size={14} color="red" />}
               onClick={() => openDeleteStartegyModal(strategy.id)}

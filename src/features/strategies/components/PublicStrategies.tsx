@@ -7,7 +7,10 @@ import {
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getPublicStrategiesPaginated } from "services/strategy";
+import {
+  getPublicStrategiesNotSubscribedPaginated,
+  getPublicStrategiesPaginated,
+} from "services/strategy";
 import { PublicStratPaginated } from "types/strategy";
 import PublicStratCard from "./PublicStratCard";
 
@@ -20,7 +23,7 @@ const PublicStrategies = ({}: Props) => {
 
   const { data, isLoading } = useQuery<PublicStratPaginated>(
     ["publicStrategies", page],
-    () => getPublicStrategiesPaginated(page, LIMIT)
+    () => getPublicStrategiesNotSubscribedPaginated(page, LIMIT)
   );
 
   if (isLoading) return <LoadingOverlay visible />;

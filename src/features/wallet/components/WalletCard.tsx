@@ -87,7 +87,13 @@ const WalletCard = ({ wallet }: Props) => {
           overflow: "hidden",
         }}
       >
-        <Image src={`${wallet.exchange.image}`} height={160} alt="Norway" />
+        {wallet.exchange && wallet.exchange.image && (
+          <Image
+            src={`${wallet.exchange.image}`}
+            height={160}
+            alt="wallet image"
+          />
+        )}
       </Card.Section>
 
       <Group
@@ -119,8 +125,9 @@ const WalletCard = ({ wallet }: Props) => {
         <Text weight={700}>Balance :</Text>
         <Text weight={500} color="green">
           <Badge color={wallet.balance > 0 ? "green" : "red"} variant="light">
-            {wallet.balance && wallet.balance >= 0 ? `${wallet.balance || 0} $` : "Cannot Access Wallet"}
-            
+            {wallet.balance && wallet.balance >= 0
+              ? `${wallet.balance || 0} $`
+              : "Cannot Access Wallet"}
           </Badge>
         </Text>
       </Group>

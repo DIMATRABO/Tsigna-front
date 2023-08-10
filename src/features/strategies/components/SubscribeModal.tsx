@@ -5,7 +5,7 @@ import {
 } from "../schemas/strategy";
 import { PublicStrat } from "types/strategy";
 import { Button, LoadingOverlay, NumberInput, Select } from "@mantine/core";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyWallets } from "services/wallet";
 import { IWallet } from "types/wallet";
 import { subscribeToStrategy } from "services/strategy";
@@ -15,6 +15,7 @@ type Props = {
 };
 
 const SubscribeModal = ({ strategy }: Props) => {
+  const queryClient = useQueryClient();
   const form = useForm<SubscribeStrategySchema>({
     validate: zodResolver(subscribeStrategySchema),
     // initialValues: {
@@ -31,7 +32,16 @@ const SubscribeModal = ({ strategy }: Props) => {
   );
 
   const { mutate: subscribe, isLoading: subscribing } = useMutation(
-    (values: SubscribeStrategySchema) => subscribeToStrategy(values)
+    (values: SubscribeStrategySchema) => subscribeToStrategy(values),
+    {
+      onSuccess(data, variables, context) {
+        queryClient.invalidateQueries([
+          "subscribedStrategies",
+          "publicStrategies",
+          "myStrategies",
+        ]);
+      },
+    }
   );
 
   const onSubmit = (values: SubscribeStrategySchema) => {

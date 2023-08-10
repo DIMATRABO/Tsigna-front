@@ -26,8 +26,6 @@ const SubscribedStrategies = ({}: Props) => {
       }
     );
 
-  console.log("subscribedStrategies", subscribedStrategies);
-
   if (isLoading) return <LoadingOverlay visible />;
 
   return (
@@ -44,7 +42,7 @@ const SubscribedStrategies = ({}: Props) => {
         {subscribedStrategies?.strategies &&
           subscribedStrategies.strategies.length > 0 &&
           subscribedStrategies.strategies.map((s) => (
-            <StrategyCard key={s.id} strategy={s} />
+            <StrategyCard key={s.id} strategy={s} isSubscribed />
           ))}
       </SimpleGrid>
       <Center>
