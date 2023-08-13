@@ -26,7 +26,7 @@ const Main = () => {
   useEffect(() => {
     //fill templates
     httpClient
-      .get("/template/all")
+      .get("/templates/")
       .then((res) => {
         dispatch(setTemplates(res.data));
       })
@@ -36,7 +36,7 @@ const Main = () => {
 
     if (!!botId) {
       httpClient
-        .get(`/bot/id/${botId}`)
+        .get(`/bots/${botId}`)
         .then((response) => {
           setBotName(response.data?.name);
           if (!!response.data.cards) {
@@ -80,8 +80,8 @@ const Main = () => {
                 key: field.key,
                 value:
                   !field.value &&
-                  field.type === "SELECT" &&
-                  field.options?.length > 0
+                    field.type === "SELECT" &&
+                    field.options?.length > 0
                     ? field.options[0].key
                     : field.value,
                 fromCard: field.fromCard,
@@ -103,7 +103,7 @@ const Main = () => {
       });
 
       httpClient
-        .post("bot/save", bot)
+        .post("bots/", bot)
         .then(() => {
           navigate("/");
           dispatch(removeDraft());

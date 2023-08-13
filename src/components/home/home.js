@@ -14,7 +14,7 @@ function Home() {
 
   useEffect(() => {
     httpClient
-      .get("/bot/all/me")
+      .get("/bots/me")
       .then((response) => {
         setBots(response.data);
       })

@@ -1,49 +1,48 @@
 {
-  "name": "trabo_front",
-  "version": "0.1.0",
+  "name": "tsignal-dashboard",
   "private": true,
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.8.6",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.1.3",
-    "jwt-decode": "^3.1.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.5",
-    "react-icons": "^4.6.0",
-    "react-redux": "^8.0.4",
-    "react-router-dom": "^6.5.0",
-    "react-scripts": "5.0.1",
-    "react-xarrows": "^2.0.2",
-    "redux": "^4.2.0",
-    "sass": "^1.55.0",
-    "store": "^2.0.12",
-    "web-vitals": "^2.1.4"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx src",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@mantine/core": "^6.0.10",
+    "@mantine/dates": "^6.0.10",
+    "@mantine/form": "^6.0.10",
+    "@mantine/hooks": "^6.0.11",
+    "@mantine/modals": "^6.0.10",
+    "@mantine/notifications": "^6.0.10",
+    "@tabler/icons-react": "^2.18.0",
+    "@tanstack/react-query": "^4.29.7",
+    "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
+    "dayjs": "^1.11.8",
+    "mantine-datatable": "^2.5.0",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.1",
+    "usehooks-ts": "^2.9.1",
+    "zod": "^3.21.4"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "@vitejs/plugin-react": "^4.0.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.3.4",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

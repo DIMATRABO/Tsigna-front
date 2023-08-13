@@ -19,7 +19,7 @@ const Login = () => {
     if (!loading) {
       setLoading(true);
       httpClient
-        .post("user/auth", {
+        .post("users/auth", {
           login: username,
           passwd: password,
         })
