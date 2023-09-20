@@ -16,7 +16,7 @@ import PublicStratCard from "./PublicStratCard";
 
 type Props = {};
 
-const LIMIT = 2;
+const LIMIT = 8;
 
 const PublicStrategies = ({}: Props) => {
   const [page, setPage] = useState(1);

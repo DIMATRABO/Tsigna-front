@@ -9,6 +9,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyWallets } from "services/wallet";
 import { IWallet } from "types/wallet";
 import { subscribeToStrategy } from "services/strategy";
+import { notifications } from "@mantine/notifications";
+import { modals } from "@mantine/modals";
 
 type Props = {
   strategy: PublicStrat;
@@ -35,11 +37,24 @@ const SubscribeModal = ({ strategy }: Props) => {
     (values: SubscribeStrategySchema) => subscribeToStrategy(values),
     {
       onSuccess(data, variables, context) {
+        notifications.show({
+          title: "Success",
+          message: "Successfully subscribed to strategy",
+          color: "green",
+        });
         queryClient.invalidateQueries([
           "subscribedStrategies",
           "publicStrategies",
           "myStrategies",
         ]);
+        modals.closeAll();
+      },
+      onError(error, variables, context) {
+        notifications.show({
+          title: "Error",
+          message: "Error subscribing to strategy",
+          color: "red",
+        });
       },
     }
   );

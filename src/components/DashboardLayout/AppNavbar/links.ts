@@ -4,6 +4,7 @@ import {
   IconLayoutDashboard,
   IconWallet,
   IconBulb,
+  IconHelp,
 } from "@tabler/icons-react";
 import { Link } from "types/link";
 // import { UserRole } from 'features/Dashboard/Users/utils/model';
@@ -38,6 +39,12 @@ export const links: Array<Link> = [
     icon: IconBulb,
     path: "/adminStrategies",
     roles: ["genin"],
+  },
+  {
+    icon: IconHelp,
+    label: "Learn",
+    path: "/learn",
+    roles: ["user"],
   },
 ];
 

@@ -11,7 +11,7 @@ import { AuthContext } from "context/user";
 
 type Props = {};
 
-const LIMIT = 2;
+const LIMIT = 8;
 
 const SubscribedStrategies = ({}: Props) => {
   const [page, setPage] = useState(1);

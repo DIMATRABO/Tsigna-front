@@ -1,0 +1,21 @@
+@import '../../css/parameters.scss';
+
+.pop-up-background {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: $pop-up-level;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .content-container {
+    position: relative;
+    height: auto;
+    width: auto;
+  }
+}

@@ -55,7 +55,7 @@ const PublicStratCard = ({ strategy }: Props) => {
           {strategy.name}
         </Text>
 
-        <Menu shadow="md" width={200}>
+        {/* <Menu shadow="md" width={200}>
           <Menu.Target>
             <IconDotsVertical
               size="1.2rem"
@@ -76,7 +76,7 @@ const PublicStratCard = ({ strategy }: Props) => {
               Delete Strategy
             </Menu.Item>
           </Menu.Dropdown>
-        </Menu>
+        </Menu> */}
       </Group>
       <Flex
         align="center"

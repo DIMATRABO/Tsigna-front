@@ -18,18 +18,24 @@ import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
 import AddUserForm from "./AddUserForm";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { activateUser, deleteUser, getAllUsersPaginated } from "services/user";
+import {
+  activateUser,
+  deleteUser,
+  getAllUsersPaginated,
+  getAllUsersPaginatedBySearch,
+} from "services/user";
 import { useState } from "react";
 import { IUsersResponse, User } from "types/user";
 import EditUserForm from "./EditUserForm";
 import { showNotification } from "@mantine/notifications";
+import { useDebouncedValue } from "@mantine/hooks";
 
 export const EditUserSchema = z.object({
-  firstName: z.string().nonempty({ message: "First name is required" }),
-  lastName: z.string().nonempty({ message: "Last name is required" }),
+  first_name: z.string().nonempty({ message: "First name is required" }),
+  last_name: z.string().nonempty({ message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email" }),
-  subscription: z.string().nonempty({ message: "Subscription is required" }),
-  birthDate: z.string().nonempty({ message: "Birth date is required" }),
+  // subscription: z.string().nonempty({ message: "Subscription is required" }),
+  birthday: z.date(),
 });
 
 export type EditUserValues = z.infer<typeof EditUserSchema>;
@@ -38,13 +44,15 @@ const LIMIT = 10;
 
 function Users() {
   const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [value] = useDebouncedValue(query, 500);
 
   const {
     data: users,
     isFetching,
     refetch,
-  } = useQuery<IUsersResponse>(["users", page], () =>
-    getAllUsersPaginated(page, LIMIT)
+  } = useQuery<IUsersResponse>(["users", page, value], () =>
+    getAllUsersPaginatedBySearch(value, page, LIMIT)
   );
 
   const { mutate: activateUserMutation, isLoading: isActivating } = useMutation(
@@ -134,6 +142,8 @@ function Users() {
         placeholder="Search for a user"
         icon={<IconSearch size="0.8rem" />}
         py={10}
+        onChange={(event) => setQuery(event.currentTarget.value)}
+        value={query}
       />
       <Button
         color="violet"

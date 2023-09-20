@@ -25,6 +25,7 @@ import RolesRoute from "components/RolesRoute";
 import { UserRole } from "types/user";
 import Users from "features/admin/components/Users";
 import AdminStrategies from "features/admin/components/AdminStrategies";
+import Learn from "features/learn/components/Learn";
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
@@ -55,6 +56,7 @@ function App() {
                 {/* <Route path="/wallet/:id" element={<MyWallet />} /> */}
                 <Route path="/strategies" element={<Strategies />} />
                 <Route path="/strategies/:id" element={<Strategy />} />
+                <Route path="/learn" element={<Learn />} />
               </Route>
               <Route element={<RolesRoute roles={[UserRole.GENIN]} />}>
                 <Route path="/users" element={<Users />} />

@@ -87,3 +87,8 @@ export const unsubscribeFromStrategy = async (id: string) => {
   });
   return data;
 };
+
+export const deleteStrategyAdmin = async (id: string) => {
+  const { data } = await instance.delete("/strategies/" + id);
+  return data;
+};

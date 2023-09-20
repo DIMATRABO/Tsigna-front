@@ -172,15 +172,20 @@ const StrategyCard = ({ strategy, isSubscribed }: Props) => {
           </Menu.Target>
 
           <Menu.Dropdown>
-            <Menu.Label>Webhook Details : </Menu.Label>
-            <Menu.Item
-              icon={<IconEye size={14} />}
-              onClick={() =>
-                openApiKeysModal(strategy.webhook_id, strategy.webhook_key)
-              }
-            >
-              View Details
-            </Menu.Item>
+            {!isSubscribed && (
+              <>
+                {" "}
+                <Menu.Label>Webhook Details : </Menu.Label>
+                <Menu.Item
+                  icon={<IconEye size={14} />}
+                  onClick={() =>
+                    openApiKeysModal(strategy.webhook_id, strategy.webhook_key)
+                  }
+                >
+                  View Details
+                </Menu.Item>
+              </>
+            )}
             {isSubscribed && (
               <Menu.Item
                 icon={<IconLogout size={14} />}
@@ -192,13 +197,15 @@ const StrategyCard = ({ strategy, isSubscribed }: Props) => {
                 Unsubscribe
               </Menu.Item>
             )}
-            <Menu.Item
-              icon={<IconTrash size={14} color="red" />}
-              onClick={() => openDeleteStartegyModal(strategy.id)}
-              color="red"
-            >
-              Delete Strategy
-            </Menu.Item>
+            {!isSubscribed && (
+              <Menu.Item
+                icon={<IconTrash size={14} color="red" />}
+                onClick={() => openDeleteStartegyModal(strategy.id)}
+                color="red"
+              >
+                Delete Strategy
+              </Menu.Item>
+            )}
           </Menu.Dropdown>
         </Menu>
       </Group>
